@@ -12,7 +12,9 @@ const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
   {
     label: 'Set dnd',
-    accelerator: 'Command+T',
+    id: 'dnd-status',
+    type: 'checkbox',
+    click () { toggleDnd() }
 	},
   { type: 'separator' },
 	{
@@ -25,6 +27,8 @@ const contextMenu = Menu.buildFromTemplate([
 		selector: 'terminate:',
 	}
 ])
+
+status.menuItem = contextMenu.getMenuItemById('dnd-status')
 
 if (isDevMode) enableLiveReload();
 
@@ -45,9 +49,6 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => activateMainWindow(isDevMode));
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
 
 ipcMain.on('preferences', (event, arg) => {
   switch (arg) {
