@@ -1,0 +1,7 @@
+export const DND_ACTIVATE = 'dnd-activate'
+export const DND_ACTIVATED = 'dnd-activated'
+export const DND_DEACTIVATE = 'dnd-deactivate'
+export const DND_DEACTIVATED = 'dnd-deactivated'
+export const DND_TOGGLE = 'dnd-toggle'
+export const REQUEST_STATUS = 'request-status'
+export const CURRENT_STATUS = 'current-status'
