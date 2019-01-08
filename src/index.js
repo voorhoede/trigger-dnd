@@ -6,12 +6,12 @@ import createMainWindow, { activate as activateMainWindow } from './main/main-wi
 import tray from './main/tray'
 import { activate } from './main/main-window';
 import * as events from './events'
-import status, { sendCurrentStatus } from './main/status'
+import status from './main/status'
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: 'Set dnd',
+    label: 'Set DnD',
     id: 'dnd-status',
     type: 'checkbox',
     click () { toggleDnd() }
@@ -22,13 +22,15 @@ const contextMenu = Menu.buildFromTemplate([
     accelerator: 'Command+,',
 	},
 	{ type: 'separator' },
-	{ label: 'Quit TriggerDND',
+	{ label: 'Quit TriggerDnD',
 		accelerator: 'Command+Q',
 		selector: 'terminate:',
 	}
 ])
 
-status.menuItem = contextMenu.getMenuItemById('dnd-status')
+status.on('dnd', function(dnd) {
+  contextMenu.getMenuItemById('dnd-status').checked = dnd
+})
 
 if (isDevMode) enableLiveReload();
 

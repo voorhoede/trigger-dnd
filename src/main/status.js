@@ -2,9 +2,8 @@ import { BrowserWindow } from 'electron'
 import * as events from '../events'
 
 export default {
-	_menuItem: null,
-	set menuItem(value) {
-		this._menuItem = value
+	_listeners: {
+		dnd: []
 	},
 
 	_dnd: false,
@@ -12,9 +11,10 @@ export default {
 		return this._dnd
 	},
 	set dnd(value) {
+		const prevValue = this._dnd
 		this._dnd = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
-		this.setMenuItemValue()
+		this._listeners.dnd.forEach(fn => fn(this._dnd, prevValue))
 	},
 
 	get sendCurrentStatus() {
@@ -26,11 +26,9 @@ export default {
 		}
 	},
 
-	get setMenuItemValue() {
-		return function () {
-			if (this._menuItem) {
-				this._menuItem.checked = this._dnd
-			}
+	get on() {
+		return function (prop, fn) {
+			this._listeners[prop].push(fn)
 		}
-	}
+	},
 }
