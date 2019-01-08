@@ -10,6 +10,8 @@ export default {
 		duration: [],
 		endTime: [],
 		remainingTime: [],
+		dndStarts: [],
+		dndEnds: [],
 		statusEnds: [],
 	},
 
@@ -110,11 +112,18 @@ export default {
 			}
 
 			this._intervalId = setInterval(intervalCallback, 1000)
+
+			if (this.dnd) {
+				this._listeners.dndStarts.forEach(fn => fn())
+			}
 		}
 	},
 
 	get cancelStatus() {
 		return function () {
+			if (this.dnd) {
+				this._listeners.dndEnds.forEach(fn => fn())
+			}
 			clearInterval(this._intervalId)
 			this._intervalId = null
 			this.remainingTime = null

@@ -7,9 +7,9 @@
       <br>
       Duration: {{ status.duration }}
       <br>
-      End Time: {{ status.endTime }}
+      End Time: {{ endTime }}
       <br>
-      Remaining Time: {{ status.remainingTime }}
+      Remaining Time: {{ remainingTime }}
       <br>
       Token: {{ status.slackToken }}
     </h1>
@@ -38,6 +38,7 @@
 import Vue from 'vue'
 import { ipcRenderer } from 'electron'
 import * as events from '../../events'
+import moment from 'moment'
 
 const channel = 'preferences'
 
@@ -76,6 +77,18 @@ export default {
     changeSlackToken(event) {
       ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, event.target.value)
     },
-  }
+  },
+  computed: {
+    endTime() {
+      return this.status.endTime > 0 
+        ? moment(this.status.endTime).format('HH:mm:ss')
+        : 0
+    },
+    remainingTime() {
+      return this.status.remainingTime > 0 
+        ? moment(this.status.remainingTime).format('mm:ss')
+        : 0
+    }
+  },
 }
 </script>

@@ -12,10 +12,15 @@ import triggerSlack from './services/slack'
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
   {
-    label: 'Set DnD',
-    id: 'dnd-status',
-    type: 'checkbox',
-    click () { toggleDnd() }
+    label: 'Start DnD',
+    id: 'dnd-start',
+    click () { setDndActive() }
+  },
+  {
+    label: 'End DnD',
+    id: 'dnd-end',
+    enabled: false,
+    click () { setDndDeactive() }
 	},
   { type: 'separator' },
 	{
@@ -29,16 +34,9 @@ const contextMenu = Menu.buildFromTemplate([
 	}
 ])
 
-status.on('dnd', function(dnd) {
-  contextMenu.getMenuItemById('dnd-status').checked = dnd
-})
-
-status.on('remainingTime', function(remainingTime) {
-  console.log('remaining time:', remainingTime)
-})
-
-status.on('statusEnds', function () {
-  console.log('status ended!')
+status.on('dnd', function (dnd) {
+  contextMenu.getMenuItemById('dnd-start').enabled = !dnd
+  contextMenu.getMenuItemById('dnd-end').enabled = dnd
 })
 
 if (isDevMode) enableLiveReload();
@@ -89,7 +87,9 @@ function setDndDeactive() {
 }
 
 function toggleDnd() {
-  status.dnd = !status.dnd
+  status.dnd
+    ? status.cancelStatus()
+    : status.startStatus({ dnd: true })
 }
 
 function setMsg(msg) {
