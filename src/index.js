@@ -8,6 +8,7 @@ import { activate } from './main/main-window';
 import * as events from './events'
 import status from './main/status'
 import triggerSlack from './services/slack'
+import triggerSystemDnd from './services/system-dnd'
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
@@ -105,3 +106,4 @@ function setSlackToken(token) {
 }
 
 // triggerSlack()
+triggerSystemDnd()
