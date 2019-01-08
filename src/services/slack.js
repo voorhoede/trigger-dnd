@@ -1,55 +1,43 @@
 import slack from 'slack'
+import moment from 'moment'
 import status from '../main/status'
 
 export default function triggerSlack() {
-	status.on('dnd', async function (dnd) {
+	status.on('statusStarts', function () {
 		if (status.slackToken.length === 0) return
 
-		let token = status.slackToken
-		let num_minutes = 2
+		const token = status.slackToken
+		const num_minutes = Math.abs(moment().diff(status.endTime, 'minutes')) + 1
+		const status_expiration = moment.utc(status.endTime).unix()
 
-		Promise.resolve(dnd 
-				? slack.dnd.setSnooze({ token, num_minutes })
-				: slack.dnd.endDnd({ token: status.slackToken })
-		)
-		.then(function ({ snooze_endtime }) {
-			const setProfile = JSON.stringify({
-				"status_emoji": status.dnd ? ":no_bell:" : ":male-technologist:",
-				"status_text": status.msg,
-				"status_expiration": snooze_endtime
-			})
-			const clearProfile = JSON.stringify({
-				"status_emoji": null,
-				"status_text": null,
-			})
+		if (status.dnd) {
+			slack.dnd.setSnooze({ token, num_minutes })
+		}
 
-			return slack.users.profile.set({
+		if (status.msg) {
+			slack.users.profile.set({
 				token: status.slackToken,
-				profile: status.msg.length ? setProfile : clearProfile
+				profile: JSON.stringify({
+					"status_emoji": status.dnd ? ":no_bell:" : ":male-technologist:",
+					"status_text": status.msg,
+					status_expiration,
+				})
+			})
+		}
+	})
+
+	status.on('statusEnds', function () {
+		if (status.slackToken.length === 0) return
+
+		const token = status.slackToken
+
+		slack.dnd.endDnd({ token })
+		slack.users.profile.set({
+			token,
+			profile: JSON.stringify({
+				"status_emoji": null,
+				"status_text": null
 			})
 		})
-		.catch(function (error) {
-			console.error(error)
-		})
-
-		
-
-		// if (status.msg.length) {
-		// 	slack.users.profile.set({
-		// 		token: status.slackToken,
-		// 		profile: JSON.stringify({
-		// 			"status_emoji": status.dnd ? ":no_bell:" : ":male-technologist:",
-		// 			"status_text": status.msg,
-		// 		})
-		// 	}).catch(console.log)
-		// } else {
-		// 	slack.users.profile.set({
-		// 		token: status.slackToken,
-		// 		profile: JSON.stringify({
-		// 			"status_emoji": null,
-		// 			"status_text": null,
-		// 		})
-		// 	}).catch(console.log)
-		// }
 	})
 }

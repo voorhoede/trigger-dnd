@@ -16,6 +16,8 @@
     <button @click="activateDND">Activate DND</button>
     <button @click="deactivateDND">Deactivate DND</button>
     <button @click="toggleDND">Toggle DND</button>
+    <button @click="startStatus">Start Status</button>
+    <button @click="deactivateDND">Stop Status</button>
     <hr />
     <label>
       <span>message:</span>
@@ -67,6 +69,9 @@ export default {
     },
     toggleDND() {
       ipcRenderer.send(channel, events.DND_TOGGLE)
+    },
+    startStatus() {
+      ipcRenderer.send(channel, events.STATUS_ACTIVATE)
     },
     changeMsg(event) {
       ipcRenderer.send(channel, events.MSG_CHANGE, event.target.value)

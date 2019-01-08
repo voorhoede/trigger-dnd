@@ -12,6 +12,7 @@ export default {
 		remainingTime: [],
 		dndStarts: [],
 		dndEnds: [],
+		statusStarts: [],
 		statusEnds: [],
 	},
 
@@ -97,7 +98,7 @@ export default {
 	},
 
 	get startStatus() {
-		return function ({ dnd, duration, msg }) {
+		return function ({ dnd, duration, msg } = {}) {
 			const _duration = duration || this.duration
 			this.dnd = dnd || this._dnd
 			this.msg = msg || this._msg
@@ -116,6 +117,7 @@ export default {
 			if (this.dnd) {
 				this._listeners.dndStarts.forEach(fn => fn())
 			}
+			this._listeners.statusStarts.forEach(fn => fn())
 		}
 	},
 

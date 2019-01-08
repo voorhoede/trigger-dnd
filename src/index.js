@@ -70,6 +70,8 @@ ipcMain.on('preferences', (event, eventName, ...args) => {
       return setDndDeactive()
     case events.DND_TOGGLE:
       return toggleDnd()
+    case events.STATUS_ACTIVATE:
+      return triggerStatus()
     case events.MSG_CHANGE:
       return setMsg(...args)
     case events.DURATION_CHANGE:
@@ -93,6 +95,10 @@ function toggleDnd() {
     : status.startStatus({ dnd: true })
 }
 
+function triggerStatus() {
+  status.startStatus()
+}
+
 function setMsg(msg) {
   status.msg = msg
 }
@@ -105,5 +111,5 @@ function setSlackToken(token) {
   status.slackToken = token
 }
 
-// triggerSlack()
+triggerSlack()
 triggerSystemDnd()

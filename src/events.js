@@ -1,3 +1,4 @@
+export const STATUS_ACTIVATE = 'status-activate'
 export const DND_ACTIVATE = 'dnd-activate'
 export const DND_DEACTIVATE = 'dnd-deactivate'
 export const DND_TOGGLE = 'dnd-toggle'
