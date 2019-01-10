@@ -1,5 +1,77 @@
 <template>
-  <div>
+  <v-app>
+    <v-toolbar flat color="transparent">
+      <v-icon>none</v-icon>
+      <v-spacer />
+      <v-toolbar-title style="margin-left: 0;">Trigger DnD</v-toolbar-title>
+      <v-spacer />
+      <v-btn icon @click="openPreferences = true">
+        <v-icon>settings</v-icon>
+      </v-btn>
+    </v-toolbar>
+
+    <v-dialog v-model="openPreferences" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <v-card>
+        <v-toolbar dark color="primary">
+          <v-spacer></v-spacer>
+          <v-toolbar-title>Settings</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn icon dark @click="openPreferences = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-list two-line subheader>
+          
+          <v-subheader>Defaults</v-subheader>
+          <v-list-tile @click="">
+            <v-list-tile-content>
+              <v-list-tile-title>Duration</v-list-tile-title>
+              <v-list-tile-sub-title>{{ status.duration }} minutes</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile @click="">
+            <v-list-tile-content>
+              <v-list-tile-title>Status message</v-list-tile-title>
+              <v-list-tile-sub-title>{{ status.msg.length ? status.msg : 'None' }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-divider></v-divider>
+
+          <v-subheader>Slack</v-subheader>
+          <v-list-tile @click="">
+            <v-list-tile-content>
+              <v-list-tile-title>Enabled</v-list-tile-title>
+              <v-list-tile-sub-title>Trigger Slacks Do Not Disturb feature</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-switch :value="true"></v-switch>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-list-tile @click="">
+            <v-list-tile-content>
+              <v-list-tile-title>Token</v-list-tile-title>
+              <v-list-tile-sub-title>{{ status.slackToken.length ? status.slackToken : 'None' }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+
+          <v-divider></v-divider>
+
+          <v-subheader>Mac OS</v-subheader>
+          <v-list-tile @click="">
+            <v-list-tile-content>
+              <v-list-tile-title>Enabled</v-list-tile-title>
+              <v-list-tile-sub-title>Trigger Mac OS Do Not Disturb feature</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-switch :value="true"></v-switch>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+    </v-dialog>
+  <!--  
     <h1>
       DND status: {{ status.dnd }}
       <br>
@@ -33,7 +105,8 @@
       <span>Slack token:</span>
       <input type="text" :value="status.slackToken" @change="changeSlackToken"/>
     </label>
-  </div>
+  -->
+  </v-app>
 </template>
 
 <script>
@@ -48,7 +121,10 @@ export default {
   name: 'preferences',
   data () {
     return {
-       status: {}
+       status: {},
+       openPreferences: true,
+       defaultsOpen: true,
+       slackOpen: true,
     }
   },
   mounted() {
@@ -97,3 +173,4 @@ export default {
   },
 }
 </script>
+
