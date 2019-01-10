@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <v-toolbar flat color="transparent">
-      <v-icon>none</v-icon>
       <v-spacer />
       <v-toolbar-title style="margin-left: 0;">Trigger DnD</v-toolbar-title>
       <v-spacer />
@@ -10,7 +9,11 @@
       </v-btn>
     </v-toolbar>
 
-    <v-dialog v-model="openPreferences" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog 
+      v-model="openPreferences"
+      fullscreen
+      transition="dialog-bottom-transition"
+      @keydown.esc="escPressed">
       <v-card>
         <v-toolbar dark color="primary">
           <v-spacer></v-spacer>
@@ -24,53 +27,104 @@
         <v-list two-line subheader>
           
           <v-subheader>Defaults</v-subheader>
-          <v-list-tile @click="">
+          <v-list-tile @click="modals.defaultDurationOpen = true">
             <v-list-tile-content>
               <v-list-tile-title>Duration</v-list-tile-title>
               <v-list-tile-sub-title>{{ status.duration }} minutes</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
-          <v-list-tile @click="">
+          <v-list-tile @click="modals.defaultMsgOpen = true">
             <v-list-tile-content>
               <v-list-tile-title>Status message</v-list-tile-title>
-              <v-list-tile-sub-title>{{ status.msg.length ? status.msg : 'None' }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{ status.msg ? status.msg : 'None' }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 
           <v-divider></v-divider>
 
           <v-subheader>Slack</v-subheader>
-          <v-list-tile @click="">
+          <v-list-tile @click="toggleSlackEnabled" :disabled="!status.slackToken">
             <v-list-tile-content>
               <v-list-tile-title>Enabled</v-list-tile-title>
               <v-list-tile-sub-title>Trigger Slacks Do Not Disturb feature</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-switch :value="true"></v-switch>
+              <v-switch :value="status.slackEnabled"></v-switch>
             </v-list-tile-action>
           </v-list-tile>
-          <v-list-tile @click="">
+          <v-list-tile @click="modals.slackTokenOpen = true">
             <v-list-tile-content>
               <v-list-tile-title>Token</v-list-tile-title>
-              <v-list-tile-sub-title>{{ status.slackToken.length ? status.slackToken : 'None' }}</v-list-tile-sub-title>
+              <v-list-tile-sub-title>{{ status.slackToken ? status.slackToken : 'None' }}</v-list-tile-sub-title>
             </v-list-tile-content>
           </v-list-tile>
 
           <v-divider></v-divider>
 
           <v-subheader>Mac OS</v-subheader>
-          <v-list-tile @click="">
+          <v-list-tile @click="toggleOsEnabled">
             <v-list-tile-content>
               <v-list-tile-title>Enabled</v-list-tile-title>
               <v-list-tile-sub-title>Trigger Mac OS Do Not Disturb feature</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-switch :value="true"></v-switch>
+              <v-switch :value="status.osEnabled"></v-switch>
             </v-list-tile-action>
           </v-list-tile>
         </v-list>
       </v-card>
     </v-dialog>
+
+    <transition>
+      <over-overlay v-if="modals.defaultDurationOpen">
+        <v-card>
+          <v-toolbar flat color="transparent">
+            <span class="headline">Duration</span>
+            <v-spacer />
+            <v-btn icon @click="modals.defaultDurationOpen = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <span>foo</span>
+          </v-card-text>
+        </v-card>
+      </over-overlay>
+    </transition>
+
+    <transition>
+      <over-overlay v-if="modals.defaultMsgOpen">
+        <v-card>
+          <v-toolbar flat color="transparent">
+            <span class="headline">Status message</span>
+            <v-spacer />
+            <v-btn icon @click="modals.defaultMsgOpen = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <span>foo</span>
+          </v-card-text>
+        </v-card>
+      </over-overlay>
+    </transition>
+
+    <transition>
+      <over-overlay v-if="modals.slackTokenOpen">
+        <v-card>
+          <v-toolbar flat color="transparent">
+            <span class="headline">Slack token</span>
+            <v-spacer />
+            <v-btn icon @click="modals.slackTokenOpen = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </v-toolbar>
+          <v-card-text>
+            <span>foo</span>
+          </v-card-text>
+        </v-card>
+      </over-overlay>
+    </transition>
   <!--  
     <h1>
       DND status: {{ status.dnd }}
@@ -114,17 +168,24 @@ import Vue from 'vue'
 import { ipcRenderer } from 'electron'
 import * as events from '../../events'
 import moment from 'moment'
+import OverOverlay from './over-overlay'
 
 const channel = 'preferences'
 
 export default {
   name: 'preferences',
+  components: {
+    OverOverlay
+  },
   data () {
     return {
        status: {},
        openPreferences: true,
-       defaultsOpen: true,
-       slackOpen: true,
+       modals: {
+         defaultDurationOpen: false,
+         defaultMsgOpen: false,
+         slackTokenOpen: false,
+       }
     }
   },
   mounted() {
@@ -146,6 +207,12 @@ export default {
     toggleDND() {
       ipcRenderer.send(channel, events.DND_TOGGLE)
     },
+    toggleSlackEnabled() {
+      ipcRenderer.send(channel, events.SLACK_ENABLED_TOGGLE)
+    },
+    toggleOsEnabled() {
+      ipcRenderer.send(channel, events.OS_ENABLED_TOGGLE)
+    },
     startStatus() {
       ipcRenderer.send(channel, events.STATUS_ACTIVATE)
     },
@@ -158,6 +225,16 @@ export default {
     changeSlackToken(event) {
       ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, event.target.value)
     },
+    escPressed() {
+      const openModals = Object.entries(this.modals).filter(([key, value]) => value)
+      if (openModals.length) {
+        openModals.forEach(([key]) => {
+          this.modals[key] = false
+        })
+      } else {
+        this.openPreferences = false
+      }
+    }
   },
   computed: {
     endTime() {

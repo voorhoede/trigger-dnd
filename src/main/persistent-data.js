@@ -14,10 +14,13 @@ async function createPreferencesFile() {
 		duration: status.duration,
 		msg: status.msg,
 		slackToken: status.slackToken,
+		slackEnabled: status.slackEnabled,
+		osEnabled: status.osEnabled,
 	})
 
 	await writeFile(preferencesFile, fileContents)
 		.catch(console.log)
+
 	return fileContents
 }
 
@@ -27,7 +30,7 @@ function updateSetting(key) {
 			.then(JSON.parse)
 			.catch(console.error)
 		
-			contents[key] = value
+		contents[key] = value
 
 		return writeFile(preferencesFile, JSON.stringify(contents))
 	}
@@ -46,3 +49,5 @@ export async function loadPersistentData() {
 status.on('duration', updateSetting('duration'))
 status.on('msg', updateSetting('msg'))
 status.on('slackToken', updateSetting('slackToken'))
+status.on('slackEnabled', updateSetting('slackEnabled'))
+status.on('osEnabled', updateSetting('osEnabled'))

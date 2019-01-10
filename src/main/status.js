@@ -7,6 +7,8 @@ export default {
 		dnd: [],
 		msg: [],
 		slackToken: [],
+		slackEnabled: [],
+		osEnabled: [],
 		duration: [],
 		endTime: [],
 		remainingTime: [],
@@ -69,6 +71,28 @@ export default {
 		this._remainingTime = Number(value)
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.remainingTime.forEach(fn => fn(this._remainingTime, prevValue))
+	},
+
+	_osEnabled: true,
+	get osEnabled() {
+		return this._osEnabled
+	},
+	set osEnabled(value) {
+		const prevValue = this._osEnabled
+		this._osEnabled = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.osEnabled.forEach(fn => fn(this._osEnabled, prevValue))
+	},
+
+	_slackEnabled: true,
+	get slackEnabled() {
+		return this._slackEnabled
+	},
+	set slackEnabled(value) {
+		const prevValue = this._slackEnabled
+		this._slackEnabled = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.slackEnabled.forEach(fn => fn(this._slackEnabled, prevValue))
 	},
 
 	_slackToken: '',

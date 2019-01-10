@@ -4,7 +4,7 @@ import status from '../main/status'
 
 export default function triggerSlack() {
 	status.on('statusStarts', function () {
-		if (status.slackToken.length === 0) return
+		if (status.slackToken.length === 0 || status.slackEnabled === false) return
 
 		const token = status.slackToken
 		const num_minutes = Math.abs(moment().diff(status.endTime, 'minutes')) + 1
@@ -27,7 +27,7 @@ export default function triggerSlack() {
 	})
 
 	status.on('statusEnds', function () {
-		if (status.slackToken.length === 0) return
+		if (status.slackToken.length === 0 || status.slackEnabled === false) return
 
 		const token = status.slackToken
 

@@ -71,6 +71,10 @@ ipcMain.on('preferences', (event, eventName, ...args) => {
       return setDndDeactive()
     case events.DND_TOGGLE:
       return toggleDnd()
+    case events.SLACK_ENABLED_TOGGLE:
+      return toggleSlackEnabled()
+    case events.OS_ENABLED_TOGGLE:
+      return toggleOsEnabled()
     case events.STATUS_ACTIVATE:
       return triggerStatus()
     case events.MSG_CHANGE:
@@ -94,6 +98,14 @@ function toggleDnd() {
   status.dnd
     ? status.cancelStatus()
     : status.startStatus({ dnd: true })
+}
+
+function toggleSlackEnabled() {
+  status.slackEnabled = !status.slackEnabled
+}
+
+function toggleOsEnabled() {
+  status.osEnabled = !status.osEnabled
 }
 
 function triggerStatus() {
