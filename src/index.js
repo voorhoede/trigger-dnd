@@ -3,7 +3,7 @@ import { app, BrowserWindow, Tray, Menu, session, ipcMain } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import createMainWindow, { activate as activateMainWindow } from './main/main-window'
-import tray from './main/tray'
+import createTray from './main/tray'
 import { activate } from './main/main-window';
 import * as events from './events'
 import status from './main/status'
@@ -49,8 +49,9 @@ app.on('ready', () => {
     app.dock.hide();
   }
 
-  tray(contextMenu)
+  const tray = createTray(contextMenu)
   createMainWindow(isDevMode)
+  tray.on('right-click', toggleDnd)
 });
 
 app.on('window-all-closed', () => {

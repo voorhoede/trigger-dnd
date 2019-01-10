@@ -20,6 +20,7 @@ export default function createTray(contextMenu) {
 	const icon = getCorrectIcon()
 	tray = new Tray(icon)
 	tray.setContextMenu(contextMenu)
+	return tray
 }
 
 function getCorrectIcon() {
