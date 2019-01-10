@@ -131,7 +131,6 @@ export default {
 			this.remainingTime = null
 			this.dnd = false
 			this.endTime = null
-			this.msg = ''
 			this._listeners.statusEnds.forEach(fn => fn())
 		}
 	}
