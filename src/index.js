@@ -7,6 +7,7 @@ import tray from './main/tray'
 import { activate } from './main/main-window';
 import * as events from './events'
 import status from './main/status'
+import { loadPersistentData } from './main/persistent-data'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
 
@@ -111,5 +112,6 @@ function setSlackToken(token) {
   status.slackToken = token
 }
 
+loadPersistentData()
 triggerSlack()
 triggerSystemDnd()

@@ -40,33 +40,33 @@ export default {
 
 	_duration: 60,
 	get duration() {
-		return Number(this._duration)
+		return this._duration
 	},
 	set duration(value) {
 		const prevValue = this._duration
-		this._duration = value
+		this._duration = Number(value)
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.duration.forEach(fn => fn(this._duration, prevValue))
 	},
 
 	_endTime: null,
 	get endTime() {
-		return Number(this._endTime)
+		return this._endTime
 	},
 	set endTime(value) {
 		const prevValue = this._endTime
-		this._endTime = value
+		this._endTime = Number(value)
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.endTime.forEach(fn => fn(this._endTime, prevValue))
 	},
 
 	_remainingTime: null,
 	get remainingTime() {
-		return Number(this._remainingTime)
+		return this._remainingTime
 	},
 	set remainingTime(value) {
 		const prevValue = this._remainingTime
-		this._remainingTime = value
+		this._remainingTime = Number(value)
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.remainingTime.forEach(fn => fn(this._remainingTime, prevValue))
 	},
