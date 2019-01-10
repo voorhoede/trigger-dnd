@@ -79,15 +79,36 @@
       <over-overlay v-if="modals.defaultDurationOpen">
         <v-card>
           <v-toolbar flat color="transparent">
-            <span class="headline">Duration</span>
-            <v-spacer />
-            <v-btn icon @click="modals.defaultDurationOpen = false">
-              <v-icon>close</v-icon>
-            </v-btn>
+            <span class="headline">Default duration</span>
           </v-toolbar>
           <v-card-text>
-            <span>foo</span>
+            <p>Default duration in minutes</p>
+            <v-layout row wrap justify-space-between>
+              <v-flex xs9>
+                <v-slider
+                  style="-webkit-app-region: no-drag;"
+                  :value="status.duration"
+                  :min="1"
+                  :max="180"
+                  @input="event => status.duration = event"
+                  @change="changeDuration"
+                />
+              </v-flex>
+
+              <v-flex xs2>
+                <v-text-field
+                  :value="status.duration"
+                  class="mt-0"
+                  type="number"
+                  @change="changeDuration"
+                />
+              </v-flex>
+            </v-layout>
           </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn flat @click="modals.defaultDurationOpen = false">Close</v-btn>
+          </v-card-actions>
         </v-card>
       </over-overlay>
     </transition>
@@ -97,14 +118,20 @@
         <v-card>
           <v-toolbar flat color="transparent">
             <span class="headline">Status message</span>
-            <v-spacer />
-            <v-btn icon @click="modals.defaultMsgOpen = false">
-              <v-icon>close</v-icon>
-            </v-btn>
           </v-toolbar>
           <v-card-text>
-            <span>foo</span>
+            <p>The default message set when dnd is active</p>
+            <v-text-field
+              label="Default status message"
+              persistent-hint
+              :value="status.msg"
+              @change="changeMsg"
+            />
           </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn flat @click="modals.defaultMsgOpen = false">Close</v-btn>
+          </v-card-actions>
         </v-card>
       </over-overlay>
     </transition>
@@ -114,14 +141,19 @@
         <v-card>
           <v-toolbar flat color="transparent">
             <span class="headline">Slack token</span>
-            <v-spacer />
-            <v-btn icon @click="modals.slackTokenOpen = false">
-              <v-icon>close</v-icon>
-            </v-btn>
           </v-toolbar>
           <v-card-text>
-            <span>foo</span>
+            <p>Your Slack token</p>
+            <v-text-field
+              label="Token"
+              :value="status.slackToken"
+              @change="changeSlackToken"
+            />
           </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn flat @click="modals.slackTokenOpen = false">Close</v-btn>
+          </v-card-actions>
         </v-card>
       </over-overlay>
     </transition>
@@ -179,17 +211,18 @@ export default {
   },
   data () {
     return {
-       status: {},
-       openPreferences: true,
-       modals: {
-         defaultDurationOpen: false,
-         defaultMsgOpen: false,
-         slackTokenOpen: false,
-       }
+      status: {},
+      openPreferences: true,
+      modals: {
+        defaultDurationOpen: false,
+        defaultMsgOpen: false,
+        slackTokenOpen: false,
+      }
     }
   },
   mounted() {
     ipcRenderer.on(events.CURRENT_STATUS, (event, status) => {
+      console.log(status)
       Vue.set(this, 'status', status)
     })
     this.requestStatus()
@@ -216,14 +249,14 @@ export default {
     startStatus() {
       ipcRenderer.send(channel, events.STATUS_ACTIVATE)
     },
-    changeMsg(event) {
-      ipcRenderer.send(channel, events.MSG_CHANGE, event.target.value)
+    changeMsg(value) {
+      ipcRenderer.send(channel, events.MSG_CHANGE, value)
     },
-    changeDuration(event) {
-      ipcRenderer.send(channel, events.DURATION_CHANGE, event.target.value)
+    changeDuration(value) {
+      ipcRenderer.send(channel, events.DURATION_CHANGE, value)
     },
-    changeSlackToken(event) {
-      ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, event.target.value)
+    changeSlackToken(value) {
+      ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, value)
     },
     escPressed() {
       const openModals = Object.entries(this.modals).filter(([key, value]) => value)

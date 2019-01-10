@@ -13,7 +13,9 @@
             justify-content: center;
             align-items: center;
         ">
-        <slot />
+        <div style="min-width: 400px">
+            <slot />
+        </div>
     </div>
 </template>
 
