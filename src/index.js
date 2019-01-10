@@ -2,7 +2,7 @@ import path from 'path'
 import { app, BrowserWindow, Tray, Menu, session, ipcMain } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
-import createMainWindow, { activate as activateMainWindow } from './main/main-window'
+import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow } from './main/main-window'
 import createTray from './main/tray'
 import { activate } from './main/main-window';
 import * as events from './events'
@@ -28,6 +28,7 @@ const contextMenu = Menu.buildFromTemplate([
 	{
     label: 'Preferences',
     accelerator: 'Command+,',
+    click () { showMainWindow() }
 	},
 	{ type: 'separator' },
 	{ label: 'Quit TriggerDnD',
@@ -44,10 +45,8 @@ status.on('dnd', function (dnd) {
 if (isDevMode) enableLiveReload();
 
 app.on('ready', () => {
-  if (!isDevMode) {
   // Hide dock icon, not needed for tray application
-    app.dock.hide();
-  }
+  app.dock.hide()
 
   const tray = createTray(contextMenu)
   createMainWindow(isDevMode)

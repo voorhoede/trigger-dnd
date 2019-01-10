@@ -13,7 +13,8 @@ const createWindow = async (isDevMode) => {
 		height: 600,
 		webPreferences: {
 			nodeIntegration: true,
-		}
+		},
+		show: false
 	});
 
 	// and load the index.html of the app.
@@ -42,6 +43,14 @@ export function activate(isDevMode) {
 	if (mainWindow === null) {
 		createWindow(isDevMode)
 	}
+}
+
+export function show() {
+	mainWindow.show()
+}
+
+export function hide() {
+	mainWindow.hide()
 }
 
 export default createWindow;
