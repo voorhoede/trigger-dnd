@@ -3,12 +3,37 @@
     <v-app>
       <v-toolbar flat color="transparent">
         <v-spacer />
-        <v-toolbar-title style="margin-left: 0;">Trigger DnD</v-toolbar-title>
-        <v-spacer />
         <v-btn icon @click="openPreferences = true">
           <v-icon>settings</v-icon>
         </v-btn>
       </v-toolbar>
+
+      <v-layout align-center justify-center>
+        <v-layout align-center justify-center>
+          <v-btn
+            v-if="!status.dnd"
+            :color="status.dnd ? 'accent' : 'primary'"
+            fab
+            absolute
+            style="transform: scale(4)"
+            @click="activateDND">
+            <v-icon>notifications_off</v-icon>
+          </v-btn>
+          <v-progress-circular
+            v-if="status.dnd"
+            :rotate="-90"
+            :size="270"
+            :width="15"
+            :value="status.remainingTime / (status.duration * 1000 * 60) * 100"
+            :color="status.dnd ? 'accent' : 'primary'"
+          >
+          <v-layout align-center justify-center column>
+            <span>{{ remainingTime }}</span>
+            <v-btn color="accent" @click="deactivateDND" flat>end now</v-btn>
+          </v-layout>
+          </v-progress-circular>
+        </v-layout>
+      </v-layout>
 
       <v-dialog 
         v-model="openPreferences"
