@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import * as events from '../events'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -52,6 +53,10 @@ export function show() {
 
 export function hide() {
 	mainWindow.hide()
+}
+
+export function openPreferences() {
+	mainWindow.send(events.OPEN_PREFERENCES)
 }
 
 export default createWindow;
