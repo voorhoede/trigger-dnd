@@ -25,7 +25,7 @@ const createWindow = async (isDevMode) => {
 	// Open the DevTools.
 	if (isDevMode) {
 		await installExtension(VUEJS_DEVTOOLS);
-		mainWindow.webContents.openDevTools();
+		// mainWindow.webContents.openDevTools();
 	}
 
 	// Emitted when the window is closed.
@@ -47,8 +47,12 @@ export function activate(isDevMode) {
 	}
 }
 
-export function show() {
-	mainWindow.show()
+export async function show(isDevMode) {
+	if (mainWindow) {
+		mainWindow.show()
+	} else {
+		mainWindow = await createWindow(isDevMode)
+	}
 }
 
 export function hide() {

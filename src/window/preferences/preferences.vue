@@ -1,7 +1,5 @@
 <template>
-  <div
-    @keydown.esc="escPressed"
-    @keydown.meta.188="triggerOpenPreferences">
+  <div @keydown.esc="escPressed">
     <v-app>
       <v-toolbar flat color="transparent">
         <v-spacer />
@@ -215,7 +213,7 @@ export default {
   data () {
     return {
       status: {},
-      openPreferences: true,
+      openPreferences: false,
       modals: {
         defaultDurationOpen: false,
         defaultMsgOpen: false,
@@ -231,6 +229,11 @@ export default {
       this.openPreferences = true
     })
     this.requestStatus()
+    document.addEventListener('keydown', event => {
+      if (event.keyCode === 188 && event.metaKey === true) {
+        this.openPreferences = true
+      }
+    })
   },
   methods: {
     requestStatus() {
@@ -263,7 +266,12 @@ export default {
     changeSlackToken(value) {
       ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, value)
     },
+    triggerOpenPreferences(event) {
+      console.log('openPreferences')
+      this.openPreferences = true
+    },
     escPressed() {
+      console.log('esc pressed')
       const openModals = Object.entries(this.modals).filter(([key, value]) => value)
       if (openModals.length) {
         openModals.forEach(([key]) => {
@@ -273,9 +281,6 @@ export default {
         this.openPreferences = false
       }
     },
-    triggerOpenPreferences(event) {
-      this.openPreferences = true
-    }
   },
   computed: {
     endTime() {

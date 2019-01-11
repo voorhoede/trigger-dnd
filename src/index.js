@@ -25,6 +25,10 @@ const contextMenu = Menu.buildFromTemplate([
     click () { setDndDeactive() }
 	},
   { type: 'separator' },
+  {
+    label: 'Open Trigger DnD',
+    click () { showMainWindow(isDevMode) }
+	},
 	{
     label: 'Preferences',
     accelerator: 'Command+,',
