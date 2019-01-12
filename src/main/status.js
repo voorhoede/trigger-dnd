@@ -1,9 +1,10 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, systemPreferences } from 'electron'
 import * as events from '../events'
 
 export default {
 	_intervalId: null,
 	_listeners: {
+		dark: [],
 		dnd: [],
 		msg: [],
 		slackToken: [],
@@ -16,6 +17,17 @@ export default {
 		dndEnds: [],
 		statusStarts: [],
 		statusEnds: [],
+	},
+
+	_dark: systemPreferences.isDarkMode(),
+	get dark() {
+		return this._dark
+	},
+	set dark(value) {
+		const prevValue = this._dark
+		this._dark = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.dark.forEach(fn => fn(this._dark, prevValue))
 	},
 
 	_dnd: false,

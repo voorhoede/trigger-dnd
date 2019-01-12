@@ -15,7 +15,12 @@
   import Vuetify from 'vuetify'
   import Preferences from './preferences';
 
-  Vue.use(Vuetify)
+  Vue.use(Vuetify, {
+    theme: {
+    primary: '#FFEB3B',
+    accent: '#0D47A1',
+  }
+  })
 
   new Vue(Preferences).$mount('#app');
   </script>

@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, BrowserWindow, Tray, Menu, session, ipcMain } from 'electron';
+import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
@@ -40,6 +40,13 @@ const contextMenu = Menu.buildFromTemplate([
 		selector: 'terminate:',
 	}
 ])
+
+systemPreferences.subscribeNotification(
+	'AppleInterfaceThemeChangedNotification',
+	() => {
+    status.dark = systemPreferences.isDarkMode()
+  }
+)
 
 status.on('dnd', function (dnd) {
   contextMenu.getMenuItemById('dnd-start').enabled = !dnd

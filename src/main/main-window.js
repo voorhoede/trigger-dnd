@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, systemPreferences } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as events from '../events'
 
@@ -10,8 +10,8 @@ let mainWindow;
 const createWindow = async (isDevMode) => {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
+		width: 300,
+		height: 500,
 		webPreferences: {
 			nodeIntegration: true,
 		},

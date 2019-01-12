@@ -1,10 +1,10 @@
 <template>
   <div @keydown.esc="escPressed">
-    <v-app>
+    <v-app :dark="status.dark">
       <v-toolbar flat color="transparent">
         <v-spacer />
         <v-btn icon @click="openPreferences = true">
-          <v-icon>settings</v-icon>
+          <v-icon :color="status.dark ? 'primary' : 'accent'">settings</v-icon>
         </v-btn>
       </v-toolbar>
 
@@ -12,12 +12,12 @@
         <v-layout align-center justify-center>
           <v-btn
             v-if="!status.dnd"
-            :color="status.dnd ? 'accent' : 'primary'"
+            :color="status.dark ? 'accent' : 'primary'"
             fab
             absolute
             style="transform: scale(4)"
             @click="activateDND">
-            <v-icon>notifications_off</v-icon>
+            <v-icon :color="status.dark ? 'primary' : 'accent'">notifications_off</v-icon>
           </v-btn>
           <v-progress-circular
             v-if="status.dnd"
@@ -25,31 +25,33 @@
             :size="270"
             :width="15"
             :value="status.remainingTime / (status.duration * 1000 * 60) * 100"
-            :color="status.dnd ? 'accent' : 'primary'"
+            color="accent"
           >
           <v-layout align-center justify-center column>
-            <span>{{ remainingTime }}</span>
-            <v-btn color="accent" @click="deactivateDND" flat>end now</v-btn>
+            <span :class="status.dark ? 'primary--text' : 'accent--text'">{{ remainingTime }}</span>
+            <v-btn :color="status.dark ? 'primary' : 'accent'" @click="deactivateDND" flat>end now</v-btn>
           </v-layout>
           </v-progress-circular>
         </v-layout>
       </v-layout>
+
+      <v-footer color="transparent"/>
 
       <v-dialog 
         v-model="openPreferences"
         fullscreen
         transition="dialog-bottom-transition">
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar color="primary" light fixed>
             <v-spacer></v-spacer>
             <v-toolbar-title>Settings</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon dark @click="openPreferences = false">
+            <v-btn icon @click="openPreferences = false">
               <v-icon>close</v-icon>
             </v-btn>
           </v-toolbar>
 
-          <v-list two-line subheader>
+          <v-list two-line subheader style="padding-top: 4rem;">
             
             <v-subheader>Defaults</v-subheader>
             <v-list-tile @click="modals.defaultDurationOpen = true">
@@ -74,7 +76,7 @@
                 <v-list-tile-sub-title>Trigger Slacks Do Not Disturb feature</v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-switch :value="status.slackEnabled"></v-switch>
+                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.slackEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>
             <v-list-tile @click="modals.slackTokenOpen = true">
@@ -93,7 +95,7 @@
                 <v-list-tile-sub-title>Trigger Mac OS Do Not Disturb feature</v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-switch :value="status.osEnabled"></v-switch>
+                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.osEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>
           </v-list>
@@ -292,11 +294,9 @@ export default {
       ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, value)
     },
     triggerOpenPreferences(event) {
-      console.log('openPreferences')
       this.openPreferences = true
     },
     escPressed() {
-      console.log('esc pressed')
       const openModals = Object.entries(this.modals).filter(([key, value]) => value)
       if (openModals.length) {
         openModals.forEach(([key]) => {
