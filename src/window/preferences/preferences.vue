@@ -1,6 +1,10 @@
 <template>
   <div @keydown.esc="escPressed">
-    <v-app :dark="status.dark">
+    <v-app
+      :dark="status.dark"
+      :style="{
+        'background-color': status.dark ? '#263238' : null
+      }">
       <v-toolbar flat color="transparent">
         <v-spacer />
         <v-btn icon @click="openPreferences = true">
@@ -12,12 +16,12 @@
         <v-layout align-center justify-center>
           <v-btn
             v-if="!status.dnd"
-            :color="status.dark ? 'accent' : 'primary'"
+            color="accent"
             fab
             absolute
             style="transform: scale(4)"
             @click="activateDND">
-            <v-icon :color="status.dark ? 'primary' : 'accent'">notifications_off</v-icon>
+            <v-icon color="primary" style="transform: scale(1.25)">notifications_off</v-icon>
           </v-btn>
           <v-progress-circular
             v-if="status.dnd"
@@ -51,8 +55,13 @@
             </v-btn>
           </v-toolbar>
 
-          <v-list two-line subheader style="padding-top: 4rem;">
-            
+          <v-list
+            two-line
+            subheader
+            :style="{
+              'padding-top': '4rem',
+              'background-color': status.dark ? '#263238' : null
+            }">
             <v-subheader>Defaults</v-subheader>
             <v-list-tile @click="modals.defaultDurationOpen = true">
               <v-list-tile-content>
@@ -75,7 +84,7 @@
                 <v-list-tile-title>Enabled</v-list-tile-title>
                 <v-list-tile-sub-title>Trigger Slacks Do Not Disturb feature</v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-list-tile-action>
+              <v-list-tile-action style="min-width: 0;">
                 <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.slackEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>
@@ -94,7 +103,7 @@
                 <v-list-tile-title>Enabled</v-list-tile-title>
                 <v-list-tile-sub-title>Trigger Mac OS Do Not Disturb feature</v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-list-tile-action>
+              <v-list-tile-action style="min-width: 0;">
                 <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.osEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>

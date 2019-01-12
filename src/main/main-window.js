@@ -10,7 +10,7 @@ let mainWindow;
 const createWindow = async (isDevMode) => {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
-		width: 300,
+		width: 350,
 		height: 500,
 		webPreferences: {
 			nodeIntegration: true,
