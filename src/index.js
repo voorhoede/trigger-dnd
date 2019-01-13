@@ -10,6 +10,9 @@ import status from './main/status'
 import { loadPersistentData } from './main/persistent-data'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
+import updateElectronApp from 'update-electron-app'
+
+updateElectronApp()
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([

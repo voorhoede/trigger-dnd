@@ -1,3 +1,4 @@
+import path from 'path'
 import { BrowserWindow, systemPreferences } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as events from '../events'
@@ -16,7 +17,7 @@ const createWindow = async (isDevMode) => {
 			nodeIntegration: true,
 		},
 		show: true,
-		titleBarStyle: 'hiddenInset'
+		titleBarStyle: 'hiddenInset',
 	});
 
 	// and load the index.html of the app.
