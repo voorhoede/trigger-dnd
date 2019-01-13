@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences } from 'electron';
+import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences, globalShortcut } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
@@ -19,6 +19,7 @@ const contextMenu = Menu.buildFromTemplate([
   {
     label: 'Start DnD',
     id: 'dnd-start',
+    accelerator: 'Control+Alt+Meta+D',
     click () { setDndActive() }
   },
   {
@@ -30,6 +31,7 @@ const contextMenu = Menu.buildFromTemplate([
   { type: 'separator' },
   {
     label: 'Open Trigger DnD',
+    accelerator: 'Shift+Control+Alt+Meta+D',
     click () { showMainWindow(isDevMode) }
 	},
 	{
@@ -65,6 +67,13 @@ app.on('ready', () => {
   const tray = createTray(contextMenu)
   createMainWindow(isDevMode)
   tray.on('right-click', toggleDnd)
+
+  globalShortcut.register('Control+Alt+Meta+D', () => {
+    setDndActive()
+  })
+  globalShortcut.register('Shift+Control+Alt+Meta+D', () => {
+    showMainWindow(isDevMode)
+  })
 });
 
 app.on('window-all-closed', () => {

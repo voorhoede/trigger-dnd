@@ -2,10 +2,10 @@ import path from 'path'
 import { Tray, Menu, systemPreferences } from 'electron'
 import status from './status'
 
-const iconOffWhite = path.join(__dirname, '../assets/notification-off-small-white.png')
-const iconOnWhite = path.join(__dirname, '../assets/notification-on-small-white.png')
-const iconOffDark = path.join(__dirname, '../assets/notification-off-small-dark.png')
-const iconOnDark = path.join(__dirname, '../assets/notification-on-small-dark.png')
+const iconOffWhite = path.join(__dirname, '../assets/off.png')
+const iconOnWhite = path.join(__dirname, '../assets/on-white.png')
+const iconOffDark = path.join(__dirname, '../assets/off.png')
+const iconOnDark = path.join(__dirname, '../assets/on-black.png')
 
 let tray;
 
