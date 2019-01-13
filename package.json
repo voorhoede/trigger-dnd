@@ -14,6 +14,14 @@
   "keywords": [],
   "author": "petergoes",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/voorhoede-labs/trigger-dnd.git"
+  },
+  "bugs": {
+    "url": "https://github.com/voorhoede-labs/trigger-dnd/issues"
+  },
+  "homepage": "https://github.com/voorhoede-labs/trigger-dnd#readme",
   "config": {
     "forge": {
       "make_targets": {
