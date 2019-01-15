@@ -46,8 +46,12 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "voorhoede-labs",
+        "name": "trigger-dnd",
+        "options": {
+          "protocol": "https",
+          "host": "api.github.com"
+        }
       },
       "windowsStoreConfig": {
         "packageName": "",
