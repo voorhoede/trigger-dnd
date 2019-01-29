@@ -15,7 +15,7 @@
       <v-layout align-center justify-center>
         <v-layout align-center justify-center>
           <v-btn
-            v-if="!status.dnd"
+            v-if="!status.endTime"
             color="accent"
             fab
             absolute
@@ -24,7 +24,7 @@
             <v-icon color="primary" style="transform: scale(1.25)">notifications_off</v-icon>
           </v-btn>
           <v-progress-circular
-            v-if="status.dnd"
+            v-if="status.endTime"
             :rotate="-90"
             :size="270"
             :width="15"
@@ -33,13 +33,34 @@
           >
           <v-layout align-center justify-center column>
             <span :class="status.dark ? 'primary--text' : 'accent--text'">{{ remainingTime }}</span>
-            <v-btn :color="status.dark ? 'primary' : 'accent'" @click="deactivateDND" flat>end now</v-btn>
+            <v-btn 
+              v-if="status.cancelable"
+              :color="status.dark ? 'primary' : 'accent'"
+              @click="deactivateDND" flat>
+              end now
+            </v-btn>
           </v-layout>
           </v-progress-circular>
         </v-layout>
       </v-layout>
 
-      <v-footer color="transparent"/>
+      <v-footer color="transparent" class="pa-3">
+        <v-spacer />
+        <span
+          v-if="
+            !endTime &&
+            googleCalendarUntilNext &&
+            status.googleCalendarUntilNext < 1000 * 60 * 120
+          "
+          style="opacity: 0.25">
+          Until next status: {{ googleCalendarUntilNext }}
+        </span>
+        <span
+          v-if="endTime"
+          style="opacity: 0.25">
+          {{ status.msg }}
+        </span>
+      </v-footer>
 
       <v-dialog 
         v-model="openPreferences"
@@ -106,6 +127,37 @@
               <v-list-tile-action style="min-width: 0;">
                 <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.osEnabled"></v-switch>
               </v-list-tile-action>
+            </v-list-tile>
+
+            <v-divider></v-divider>
+
+            <v-subheader>Google Calendar</v-subheader>
+            <v-list-tile @click="() => toggleStatusValue('googleCalendarEnabled')">
+              <v-list-tile-content>
+                <v-list-tile-title>Enabled</v-list-tile-title>
+                <v-list-tile-sub-title>Use Google Calendar events as DnD trigger</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action style="min-width: 0;">
+                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarEnabled"></v-switch>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-list-tile @click="modals.googleClientId = true">
+              <v-list-tile-content>
+                <v-list-tile-title>Client Id</v-list-tile-title>
+                <v-list-tile-sub-title>{{ status.googleClientId ? status.googleClientId : 'None' }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile @click="modals.googleClientSecret = true">
+              <v-list-tile-content>
+                <v-list-tile-title>Client Secret</v-list-tile-title>
+                <v-list-tile-sub-title>{{ status.googleClientSecret ? status.googleClientSecret : 'None' }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile @click="modals.googleProjectId = true">
+              <v-list-tile-content>
+                <v-list-tile-title>Project Id</v-list-tile-title>
+                <v-list-tile-sub-title>{{ status.googleProjectId ? status.googleProjectId : 'None' }}</v-list-tile-sub-title>
+              </v-list-tile-content>
             </v-list-tile>
           </v-list>
         </v-card>
@@ -193,41 +245,73 @@
           </v-card>
         </over-overlay>
       </transition>
-    <!--  
-      <h1>
-        DND status: {{ status.dnd }}
-        <br>
-        Message: {{ status.msg }}
-        <br>
-        Duration: {{ status.duration }}
-        <br>
-        End Time: {{ endTime }}
-        <br>
-        Remaining Time: {{ remainingTime }}
-        <br>
-        Token: {{ status.slackToken }}
-      </h1>
-      <button @click="activateDND">Activate DND</button>
-      <button @click="deactivateDND">Deactivate DND</button>
-      <button @click="toggleDND">Toggle DND</button>
-      <button @click="startStatus">Start Status</button>
-      <button @click="deactivateDND">Stop Status</button>
-      <hr />
-      <label>
-        <span>message:</span>
-        <input type="text" :value="status.msg" @change="changeMsg" :disabled="status.dnd"/>
-      </label>
-      <hr />
-      <label>
-        <span>duration:</span>
-        <input type="text" :value="status.duration" @change="changeDuration" :disabled="status.dnd"/>
-      </label>
-      <hr />
-      <label>
-        <span>Slack token:</span>
-        <input type="text" :value="status.slackToken" @change="changeSlackToken"/>
-      </label>
-    -->
+
+      <transition>
+        <over-overlay v-if="modals.googleClientId">
+          <v-card>
+            <v-toolbar flat color="transparent">
+              <span class="headline">Slack token</span>
+            </v-toolbar>
+            <v-card-text>
+              <p>Your Google Project Client Id</p>
+              <v-text-field
+                label="Token"
+                :value="status.googleClientId"
+                @change="event => changeStatusValue('googleClientId', event)"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn flat @click="modals.googleClientId = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </over-overlay>
+      </transition>
+
+      <transition>
+        <over-overlay v-if="modals.googleClientSecret">
+          <v-card>
+            <v-toolbar flat color="transparent">
+              <span class="headline">Slack token</span>
+            </v-toolbar>
+            <v-card-text>
+              <p>Your Google Project Client Secret</p>
+              <v-text-field
+                label="Token"
+                :value="status.googleClientSecret"
+                @change="event => changeStatusValue('googleClientSecret', event)"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn flat @click="modals.googleClientSecret = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </over-overlay>
+      </transition>
+
+      <transition>
+        <over-overlay v-if="modals.googleProjectId">
+          <v-card>
+            <v-toolbar flat color="transparent">
+              <span class="headline">Slack token</span>
+            </v-toolbar>
+            <v-card-text>
+              <p>Your Google Project Id</p>
+              <v-text-field
+                label="Token"
+                :value="status.googleProjectId"
+                @change="event => changeStatusValue('googleProjectId', event)"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn flat @click="modals.googleProjectId = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </over-overlay>
+      </transition>
+
     </v-app>
   </div>
 </template>
@@ -254,6 +338,9 @@ export default {
         defaultDurationOpen: false,
         defaultMsgOpen: false,
         slackTokenOpen: false,
+        googleClientId: false,
+        googleClientSecret: false,
+        googleProjectId: false,
       }
     }
   },
@@ -302,6 +389,12 @@ export default {
     changeSlackToken(value) {
       ipcRenderer.send(channel, events.SLACK_TOKEN_CHANGE, value)
     },
+    toggleStatusValue(property) {
+      ipcRenderer.send(channel, events.REQUEST_STATUS_PROP_CHANGE, property, !this.status[property])
+    },
+    changeStatusValue(property, value) {
+      ipcRenderer.send(channel, events.REQUEST_STATUS_PROP_CHANGE, property, value)
+    },
     triggerOpenPreferences(event) {
       this.openPreferences = true
     },
@@ -326,7 +419,18 @@ export default {
       return this.status.remainingTime > 0 
         ? moment(this.status.remainingTime).format('mm:ss')
         : 0
-    }
+    },
+
+    remainingTime() {
+      return this.status.remainingTime > 0 
+        ? moment(this.status.remainingTime).format('mm:ss')
+        : 0
+    },
+    googleCalendarUntilNext() {
+      return this.status.googleCalendarUntilNext > 0 
+        ? moment(this.status.googleCalendarUntilNext).format('mm:ss')
+        : 0
+    },
   },
 }
 </script>

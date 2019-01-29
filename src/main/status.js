@@ -1,9 +1,10 @@
 import { BrowserWindow, systemPreferences } from 'electron'
 import * as events from '../events'
 
-export default {
+const status = {
 	_intervalId: null,
 	_listeners: {
+		cancelable: [],
 		dark: [],
 		dnd: [],
 		msg: [],
@@ -17,6 +18,23 @@ export default {
 		dndEnds: [],
 		statusStarts: [],
 		statusEnds: [],
+		googleCalendarEnabled: [],
+		googleClientId: [],
+		googleClientSecret: [],
+		googleProjectId: [],
+		googleCalendarEvents: [],
+		googleCalendarUntilNext: [],
+	},
+
+	_cancelable: true,
+	get cancelable() {
+		return this._cancelable
+	},
+	set cancelable(value) {
+		const prevValue = this._cancelable
+		this._cancelable = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.cancelable.forEach(fn => fn(this._cancelable, prevValue))
 	},
 
 	_dark: systemPreferences.isDarkMode(),
@@ -118,6 +136,61 @@ export default {
 		this._listeners.slackToken.forEach(fn => fn(this._slackToken, prevValue))
 	},
 
+	_googleCalendarEnabled: false,
+	get googleCalendarEnabled() {
+		return this._googleCalendarEnabled
+	},
+	set googleCalendarEnabled(value) {
+		const prevValue = this._googleCalendarEnabled
+		this._googleCalendarEnabled = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleCalendarEnabled.forEach(fn => fn(this._googleCalendarEnabled, prevValue))
+	},
+
+	_googleClientId: '',
+	get googleClientId() {
+		return this._googleClientId
+	},
+	set googleClientId(value) {
+		const prevValue = this._googleClientId
+		this._googleClientId = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleClientId.forEach(fn => fn(this._googleClientId, prevValue))
+	},
+
+	_googleClientSecret: '',
+	get googleClientSecret() {
+		return this._googleClientSecret
+	},
+	set googleClientSecret(value) {
+		const prevValue = this._googleClientSecret
+		this._googleClientSecret = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleClientSecret.forEach(fn => fn(this._googleClientSecret, prevValue))
+	},
+
+	_googleProjectId: '',
+	get googleProjectId() {
+		return this._googleProjectId
+	},
+	set googleProjectId(value) {
+		const prevValue = this._googleProjectId
+		this._googleProjectId = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleProjectId.forEach(fn => fn(this._googleProjectId, prevValue))
+	},
+
+	_googleCalendarUntilNext: null,
+	get googleCalendarUntilNext() {
+		return this._googleCalendarUntilNext
+	},
+	set googleCalendarUntilNext(value) {
+		const prevValue = this._googleCalendarUntilNext
+		this._googleCalendarUntilNext = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleCalendarUntilNext.forEach(fn => fn(this._googleCalendarUntilNext, prevValue))
+	},
+
 	get sendCurrentStatus() {
 		return function (target, channel) {
 			const cleanStatus = Object.keys(this)
@@ -134,12 +207,13 @@ export default {
 	},
 
 	get startStatus() {
-		return function ({ dnd, duration, msg } = {}) {
+		return function ({ dnd, duration, msg, cancelable = true } = {}) {
 			const _duration = duration || this.duration
 			this.dnd = dnd || this._dnd
 			this.msg = msg || this._msg
 			this.endTime = Date.now() + (_duration * 1000 * 60)
 			this.remainingTime = this.endTime - Date.now()
+			this.cancelable = cancelable
 
 			const intervalCallback = () => {
 				this.remainingTime = this.endTime - Date.now()
@@ -167,7 +241,19 @@ export default {
 			this.remainingTime = null
 			this.dnd = false
 			this.endTime = null
+			this.cancelable = true
 			this._listeners.statusEnds.forEach(fn => fn())
 		}
 	}
 }
+
+export default status
+
+status.googleCalendarEvents = new Proxy([], {
+	set(target, prop, value) {
+		target[prop] = value
+		BrowserWindow.getAllWindows().forEach(status.sendCurrentStatus.bind(status))
+		status._listeners.googleCalendarEvents.forEach(fn => fn(status.googleCalendarEvents))
+		return true
+	}
+})
