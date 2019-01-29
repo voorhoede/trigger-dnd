@@ -16,7 +16,7 @@ const createWindow = async (isDevMode) => {
 		webPreferences: {
 			nodeIntegration: true,
 		},
-		show: true,
+		show: isDevMode,
 		titleBarStyle: 'hiddenInset',
 	});
 
