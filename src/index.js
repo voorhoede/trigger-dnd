@@ -10,6 +10,7 @@ import status from './main/status'
 import { loadPersistentData } from './main/persistent-data'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
+import luxafor from './services-input/luxafor'
 import updateElectronApp from 'update-electron-app'
 
 updateElectronApp()
@@ -150,3 +151,5 @@ function setSlackToken(token) {
 loadPersistentData()
 triggerSlack()
 triggerSystemDnd()
+
+luxafor()
