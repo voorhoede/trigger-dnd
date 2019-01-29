@@ -1,7 +1,7 @@
 {
   "name": "trigger-dnd",
   "productName": "Trigger DnD",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Trigger DnD modes all over the place",
   "main": "src/index.js",
   "scripts": {
@@ -38,7 +38,8 @@
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
-        "icon": "src/assets/icon.icns"
+        "icon": "src/assets/icon.icns",
+        "osxSign": true
       },
       "electronWinstallerConfig": {
         "name": "trigger_dnd"
