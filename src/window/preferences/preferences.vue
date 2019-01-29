@@ -39,7 +39,12 @@
         </v-layout>
       </v-layout>
 
-      <v-footer color="transparent"/>
+      <v-footer color="transparent" class="pa-3">
+        <span
+          style="opacity: 0.25">
+          Trigger DnD
+        </span>
+      </v-footer>
 
       <v-dialog 
         v-model="openPreferences"
