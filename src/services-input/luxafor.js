@@ -22,7 +22,7 @@ export default async function luxafor() {
     const blue = [0, 0, 255, 25]
 
     getLight()
-        .then(light => light.fade(...green).exec())
+        .then(light => light.fade(...off).exec())
         .catch(clearLight)
 
     status.on('statusStarts', () => {
@@ -37,7 +37,7 @@ export default async function luxafor() {
 
     status.on('statusEnds', () => {
         getLight()
-            .then(light => light.fade(...green).exec())
+            .then(light => light.fade(...off).exec())
             .catch(clearLight)
     })
 
