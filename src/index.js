@@ -16,6 +16,7 @@ import updateElectronApp from 'update-electron-app'
 import './main/version'
 
 updateElectronApp({
+  repo: 'voorhoede-labs/trigger-dnd',
   logger: log
 })
 
