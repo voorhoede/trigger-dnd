@@ -4,6 +4,7 @@ import * as events from '../events'
 export default {
 	_intervalId: null,
 	_listeners: {
+		version: [],
 		dark: [],
 		dnd: [],
 		msg: [],
@@ -17,6 +18,17 @@ export default {
 		dndEnds: [],
 		statusStarts: [],
 		statusEnds: [],
+	},
+
+	_version: false,
+	get version() {
+		return this._version
+	},
+	set version(value) {
+		const prevValue = this._version
+		this._version = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.version.forEach(fn => fn(this._version, prevValue))
 	},
 
 	_dark: systemPreferences.isDarkMode(),

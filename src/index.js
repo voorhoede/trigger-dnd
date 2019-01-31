@@ -12,6 +12,7 @@ import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
 import luxafor from './services-input/luxafor'
 import updateElectronApp from 'update-electron-app'
+import './main/version'
 
 updateElectronApp()
 

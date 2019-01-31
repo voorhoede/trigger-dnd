@@ -42,7 +42,7 @@
       <v-footer color="transparent" class="pa-3">
         <span
           style="opacity: 0.25">
-          Trigger DnD
+          Trigger DnD <small>(v{{ status.version }})</small>
         </span>
       </v-footer>
 
