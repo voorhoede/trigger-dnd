@@ -2,6 +2,7 @@ import path from 'path'
 import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences, globalShortcut } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
+import log from 'electron-log'
 import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
 import createTray from './main/tray'
 import { activate } from './main/main-window';
@@ -14,7 +15,9 @@ import luxafor from './services-input/luxafor'
 import updateElectronApp from 'update-electron-app'
 import './main/version'
 
-updateElectronApp()
+updateElectronApp({
+  logger: log
+})
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
