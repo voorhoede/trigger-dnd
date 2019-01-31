@@ -95,7 +95,7 @@ const createWindow = async (isDevMode) => {
 	});
 	
 	const menu = Menu.buildFromTemplate(menuTemplate)
-	// Menu.setApplicationMenu(menu)
+	Menu.setApplicationMenu(menu)
 	
 	return mainWindow
 };
