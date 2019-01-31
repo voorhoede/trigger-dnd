@@ -1,3 +1,4 @@
+import { app } from 'electron'
 import slack from 'slack'
 import moment from 'moment'
 import status from '../main/status'
@@ -27,6 +28,21 @@ export default function triggerSlack() {
 	})
 
 	status.on('statusEnds', function () {
+		if (status.slackToken.length === 0 || status.slackEnabled === false) return
+
+		const token = status.slackToken
+
+		slack.dnd.endDnd({ token })
+		slack.users.profile.set({
+			token,
+			profile: JSON.stringify({
+				"status_emoji": null,
+				"status_text": null
+			})
+		})
+	})
+
+	app.on('before-quit', function () {
 		if (status.slackToken.length === 0 || status.slackEnabled === false) return
 
 		const token = status.slackToken
