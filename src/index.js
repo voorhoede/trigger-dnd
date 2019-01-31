@@ -63,7 +63,7 @@ if (isDevMode) enableLiveReload();
 
 app.on('ready', () => {
   // Hide dock icon, not needed for tray application
-  // app.dock.hide()
+  app.dock.hide()
 
   const tray = createTray(contextMenu)
   createMainWindow(isDevMode)
