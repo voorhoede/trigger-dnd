@@ -1,5 +1,5 @@
 import path from 'path'
-import { BrowserWindow, systemPreferences } from 'electron'
+import { app, BrowserWindow, systemPreferences, Menu } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import * as events from '../events'
 
@@ -7,6 +7,63 @@ import * as events from '../events'
 // be closed automatically when the JavaScript object is garbage collected.
 // let mainWindow;
 let mainWindow;
+
+const menuTemplate = [
+	{
+		label: app.getName(),
+		submenu: [
+			{ role: 'about' },
+			{ type: 'separator' },
+			{ role: 'services' },
+			{ type: 'separator' },
+			{ role: 'hide' },
+			{ role: 'hideothers' },
+			{ role: 'unhide' },
+			{ type: 'separator' },
+			{ role: 'quit' }
+		]
+	},
+	{
+	  label: 'Edit',
+	  submenu: [
+		{ role: 'cut' },
+		{ role: 'copy' },
+		{ role: 'paste' },
+		{ role: 'delete' },
+		{ role: 'selectall' }
+	  ]
+	},
+	{
+	  label: 'View',
+	  submenu: [
+		{ role: 'reload' },
+		{ role: 'forcereload' },
+		{ role: 'toggledevtools' },
+		{ type: 'separator' },
+		{ role: 'resetzoom' },
+		{ role: 'zoomin' },
+		{ role: 'zoomout' },
+		{ type: 'separator' },
+		{ role: 'togglefullscreen' }
+	  ]
+	},
+	{
+	  role: 'window',
+	  submenu: [
+		{ role: 'minimize' },
+		{ role: 'close' }
+	  ]
+	},
+	{
+	  role: 'help',
+	  submenu: [
+		{
+		  label: 'Learn More',
+		  click () { require('electron').shell.openExternal('https://electronjs.org') }
+		}
+	  ]
+	}
+]
 
 const createWindow = async (isDevMode) => {
 	// Create the browser window.
@@ -16,7 +73,7 @@ const createWindow = async (isDevMode) => {
 		webPreferences: {
 			nodeIntegration: true,
 		},
-		show: true,
+		show: isDevMode,
 		titleBarStyle: 'hiddenInset',
 	});
 
@@ -36,6 +93,9 @@ const createWindow = async (isDevMode) => {
 		// when you should delete the corresponding element.
 		mainWindow = null;
 	});
+	
+	const menu = Menu.buildFromTemplate(menuTemplate)
+	Menu.setApplicationMenu(menu)
 	
 	return mainWindow
 };

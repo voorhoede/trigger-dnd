@@ -5,6 +5,7 @@ const status = {
 	_intervalId: null,
 	_listeners: {
 		cancelable: [],
+		version: [],
 		dark: [],
 		dnd: [],
 		msg: [],
@@ -35,6 +36,17 @@ const status = {
 		this._cancelable = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.cancelable.forEach(fn => fn(this._cancelable, prevValue))
+	},
+
+	_version: false,
+	get version() {
+		return this._version
+	},
+	set version(value) {
+		const prevValue = this._version
+		this._version = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.version.forEach(fn => fn(this._version, prevValue))
 	},
 
 	_dark: systemPreferences.isDarkMode(),

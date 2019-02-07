@@ -2,6 +2,7 @@ import path from 'path'
 import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences, globalShortcut } from 'electron';
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
+import log from 'electron-log'
 import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
 import createTray from './main/tray'
 import { activate } from './main/main-window';
@@ -11,9 +12,14 @@ import { loadPersistentData } from './main/persistent-data'
 import serviceInputGoogleCalendar from './services-input/google-calendar'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
+import luxafor from './services-input/luxafor'
 import updateElectronApp from 'update-electron-app'
+import './main/version'
 
-updateElectronApp()
+updateElectronApp({
+  repo: 'voorhoede-labs/trigger-dnd',
+  logger: log
+})
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 const contextMenu = Menu.buildFromTemplate([
@@ -63,7 +69,9 @@ if (isDevMode) enableLiveReload();
 
 app.on('ready', () => {
   // Hide dock icon, not needed for tray application
-  // app.dock.hide()
+  if (!isDevMode) {
+    app.dock.hide()
+  }
 
   const tray = createTray(contextMenu)
   createMainWindow(isDevMode)
@@ -159,5 +167,6 @@ loadPersistentData()
     triggerSlack()
     triggerSystemDnd()
 
+    luxafor()
     serviceInputGoogleCalendar()
   })

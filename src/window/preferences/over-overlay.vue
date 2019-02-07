@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
         ">
-        <div style="min-width: 300px">
+        <div style="max-width: 85vw; width: 500px;">
             <slot />
         </div>
     </div>
