@@ -1,7 +1,7 @@
 {
   "name": "trigger-dnd",
   "productName": "Trigger DnD",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Trigger DnD modes all over the place",
   "main": "src/index.js",
   "scripts": {
