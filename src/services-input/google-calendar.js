@@ -24,10 +24,13 @@ status.on('googleCalendarEnabled', enabled => {
 	if (!enabled) {
 		status.googleCalendarEvents.splice(0, status.googleCalendarEvents.length)
 		status.googleCalendarUntilNext = null
+	} else {
+		bootstrap(enabled)
 	}
 })
 
 function bootstrap() {
+	status.googleToken === '' && getEvents()
 	setInterval(loop, 1000 * 1)
 	setInterval(loopFetchingNewEvents, 1000 * 60 * 15)
 }
@@ -59,6 +62,7 @@ function authorize(credentials, callback) {
 
 	fs.readFile(TOKEN_PATH, (err, token) => {
 		if (err) return getAccessToken(oAuth2Client, callback)
+		status.googleToken = token
 		oAuth2Client.setCredentials(JSON.parse(token))
 		callback(oAuth2Client)
 	})
@@ -86,7 +90,8 @@ function getAccessToken(oAuth2Client, callback) {
 		if (code) {
 			oAuth2Client.getToken(code, (err, token) => {
         if (err) return console.error('Error retrieving access token', err);
-        oAuth2Client.setCredentials(token);
+		oAuth2Client.setCredentials(token);
+		status.googleToken = token
         // Store the token to disk for later program executions
         fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
           if (err) console.error(err);
@@ -145,7 +150,7 @@ function listEvents(auth) {
 }
 
 function loopFetchingNewEvents() {
-	if (!status.googleCalendarEnabled) {
+	if (!status.googleCalendarEnabled || status.googleToken === '') {
 		return 
 	}
 
@@ -153,7 +158,7 @@ function loopFetchingNewEvents() {
 }
 
 function loop() {
-	if (!status.googleCalendarEnabled) {
+	if (!status.googleCalendarEnabled || status.googleToken === '') {
 		return 
 	} 
 

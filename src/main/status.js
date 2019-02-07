@@ -20,6 +20,7 @@ const status = {
 		statusStarts: [],
 		statusEnds: [],
 		googleCalendarEnabled: [],
+		googleToken: [],
 		googleClientId: [],
 		googleClientSecret: [],
 		googleProjectId: [],
@@ -169,6 +170,17 @@ const status = {
 		this._googleCalendarIsFetching = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.googleCalendarIsFetching.forEach(fn => fn(this._googleCalendarIsFetching, prevValue))
+	},
+
+	_googleToken: '',
+	get googleToken() {
+		return this._googleToken
+	},
+	set googleToken(value) {
+		const prevValue = this._googleToken
+		this._googleToken = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleToken.forEach(fn => fn(this._googleToken, prevValue))
 	},
 
 	_googleClientId: '',
