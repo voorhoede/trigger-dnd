@@ -9,9 +9,10 @@ import { activate } from './main/main-window';
 import * as events from './events'
 import status from './main/status'
 import { loadPersistentData } from './main/persistent-data'
+import serviceInputGoogleCalendar from './services-input/google-calendar'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
-import luxafor from './services-input/luxafor'
+import luxafor from './services/luxafor'
 import updateElectronApp from 'update-electron-app'
 import './main/version'
 
@@ -114,6 +115,8 @@ ipcMain.on('preferences', (event, eventName, ...args) => {
       return setDuration(...args)
     case events.SLACK_TOKEN_CHANGE:
       return setSlackToken(...args)
+    case events.REQUEST_STATUS_PROP_CHANGE:
+      return changeStatusProperty(...args)
   }
 })
 
@@ -155,8 +158,15 @@ function setSlackToken(token) {
   status.slackToken = token
 }
 
-loadPersistentData()
-triggerSlack()
-triggerSystemDnd()
+function changeStatusProperty(property, value) {
+  status[property] = value
+}
 
-luxafor()
+loadPersistentData()
+  .then(() => {
+    triggerSlack()
+    triggerSystemDnd()
+
+    luxafor()
+    serviceInputGoogleCalendar()
+  })
