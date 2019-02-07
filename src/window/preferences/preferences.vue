@@ -54,7 +54,7 @@
           v-if="
             !endTime &&
             googleCalendarUntilNext &&
-            status.googleCalendarUntilNext < 1000 * 60 * 120
+            status.googleCalendarUntilNext < 1000 * 60 * 240
           "
           style="opacity: 0.25">
           Until next status: {{ googleCalendarUntilNext }}
@@ -432,7 +432,7 @@ export default {
     },
     googleCalendarUntilNext() {
       return this.status.googleCalendarUntilNext > 0 
-        ? moment(this.status.googleCalendarUntilNext).format('mm:ss')
+        ? moment(this.status.googleCalendarUntilNext).format('hh:mm:ss')
         : 0
     },
   },

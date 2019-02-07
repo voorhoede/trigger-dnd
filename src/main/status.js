@@ -25,6 +25,7 @@ const status = {
 		googleProjectId: [],
 		googleCalendarEvents: [],
 		googleCalendarUntilNext: [],
+		googleCalendarIsFetching: [],
 	},
 
 	_cancelable: true,
@@ -157,6 +158,17 @@ const status = {
 		this._googleCalendarEnabled = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.googleCalendarEnabled.forEach(fn => fn(this._googleCalendarEnabled, prevValue))
+	},
+
+	_googleCalendarIsFetching: false,
+	get googleCalendarIsFetching() {
+		return this._googleCalendarIsFetching
+	},
+	set googleCalendarIsFetching(value) {
+		const prevValue = this._googleCalendarIsFetching
+		this._googleCalendarIsFetching = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleCalendarIsFetching.forEach(fn => fn(this._googleCalendarIsFetching, prevValue))
 	},
 
 	_googleClientId: '',
