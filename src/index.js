@@ -12,7 +12,7 @@ import { loadPersistentData } from './main/persistent-data'
 import serviceInputGoogleCalendar from './services-input/google-calendar'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
-import luxafor from './services-input/luxafor'
+import luxafor from './services/luxafor'
 import updateElectronApp from 'update-electron-app'
 import './main/version'
 

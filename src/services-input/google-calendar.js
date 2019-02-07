@@ -29,6 +29,7 @@ status.on('googleCalendarEnabled', enabled => {
 
 function bootstrap() {
 	setInterval(loop, 1000 * 1)
+	setInterval(loopFetchingNewEvents, 1000 * 60 * 15)
 }
 
 function getEvents() {
@@ -141,6 +142,14 @@ function listEvents(auth) {
 			}
 		}
 	});
+}
+
+function loopFetchingNewEvents() {
+	if (!status.googleCalendarEnabled) {
+		return 
+	}
+
+	getEvents()
 }
 
 function loop() {
