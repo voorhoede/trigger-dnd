@@ -78,7 +78,15 @@ app.on('ready', () => {
   tray.on('right-click', toggleDnd)
 
   globalShortcut.register('Control+Alt+Meta+D', () => {
-    setDndActive()
+    if (status.dnd) {
+      if (status.cancelable) {
+        setDndDeactive()
+      }
+    } else {
+      if (!status.cancelable) {
+        setDndActive()
+      }
+    }
   })
   globalShortcut.register('Shift+Control+Alt+Meta+D', () => {
     showMainWindow(isDevMode)
