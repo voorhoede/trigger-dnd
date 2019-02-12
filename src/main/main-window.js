@@ -1,6 +1,7 @@
 import path from 'path'
-import { app, BrowserWindow, systemPreferences, Menu } from 'electron'
+import { app, BrowserWindow, systemPreferences, Menu, ipcMain } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
+import status from './status'
 import * as events from '../events'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -75,6 +76,7 @@ const createWindow = async (isDevMode) => {
 		},
 		show: isDevMode,
 		titleBarStyle: 'hiddenInset',
+		backgroundColor: status.dark ? '#263238' : '#fff'
 	});
 
 	// and load the index.html of the app.
@@ -120,8 +122,16 @@ export function hide() {
 	mainWindow.hide()
 }
 
-export function openPreferences() {
-	mainWindow.send(events.OPEN_PREFERENCES)
+export async function openPreferences(isDevMode) {
+	if (mainWindow) {
+		mainWindow.show()
+		mainWindow.send(events.OPEN_PREFERENCES)
+	} else {
+		mainWindow = await createWindow(isDevMode)
+		ipcMain.once(events.APP_MOUNTED, () => {
+			mainWindow.send(events.OPEN_PREFERENCES)
+		})
+	}
 }
 
 export default createWindow;

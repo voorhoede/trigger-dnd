@@ -44,7 +44,7 @@ const contextMenu = Menu.buildFromTemplate([
 	{
     label: 'Preferences',
     accelerator: 'Command+,',
-    click () { openPreferences() }
+    click () { openPreferences(isDevMode) }
 	},
 	{ type: 'separator' },
 	{ label: 'Quit TriggerDnD',

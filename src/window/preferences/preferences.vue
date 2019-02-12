@@ -3,7 +3,7 @@
     <v-app
       :dark="status.dark"
       :style="{
-        'background-color': status.dark ? '#263238' : null
+        'background-color': status.dark ? '#263238' : 'transparent'
       }">
       <v-toolbar flat color="transparent">
         <v-spacer />
@@ -349,6 +349,7 @@ export default {
     }
   },
   mounted() {
+    ipcRenderer.send(events.APP_MOUNTED)
     ipcRenderer.on(events.CURRENT_STATUS, (event, status) => {
       Vue.set(this, 'status', status)
     })
