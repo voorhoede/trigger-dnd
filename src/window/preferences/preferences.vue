@@ -119,6 +119,12 @@
                 <v-list-tile-sub-title>{{ status.slackToken ? status.slackToken : 'None' }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
+            <v-list-tile @click="modals.slackIcon = true">
+              <v-list-tile-content>
+                <v-list-tile-title>Busy icon</v-list-tile-title>
+                <v-list-tile-sub-title>{{ status.slackBusyIcon ? status.slackBusyIcon : 'None' }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
 
             <v-divider></v-divider>
 
@@ -273,6 +279,28 @@
       </transition>
 
       <transition>
+        <over-overlay v-if="modals.slackIcon">
+          <v-card>
+            <v-toolbar flat color="transparent">
+              <span class="headline">Slack Busy icon</span>
+            </v-toolbar>
+            <v-card-text>
+              <p>Icon in Slack for when you are busy but not in DnD</p>
+              <v-text-field
+                label="Busy icon"
+                :value="status.slackBusyIcon"
+                @change="event => changeStatusValue('slackBusyIcon', event)"
+              />
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer />
+              <v-btn flat @click="modals.slackIcon = false">Close</v-btn>
+            </v-card-actions>
+          </v-card>
+        </over-overlay>
+      </transition>
+
+      <transition>
         <over-overlay v-if="modals.googleClientSecret">
           <v-card>
             <v-toolbar flat color="transparent">
@@ -342,6 +370,7 @@ export default {
         defaultDurationOpen: false,
         defaultMsgOpen: false,
         slackTokenOpen: false,
+        slackIcon: false,
         googleClientId: false,
         googleClientSecret: false,
         googleProjectId: false,

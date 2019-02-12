@@ -11,6 +11,7 @@ const status = {
 		msg: [],
 		slackToken: [],
 		slackEnabled: [],
+		slackBusyIcon: [],
 		osEnabled: [],
 		duration: [],
 		endTime: [],
@@ -148,6 +149,17 @@ const status = {
 		this._slackToken = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.slackToken.forEach(fn => fn(this._slackToken, prevValue))
+	},
+
+	_slackBusyIcon: ':female-technologist:',
+	get slackBusyIcon() {
+		return this._slackBusyIcon
+	},
+	set slackBusyIcon(value) {
+		const prevValue = this._slackBusyIcon
+		this._slackBusyIcon = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.slackBusyIcon.forEach(fn => fn(this._slackBusyIcon, prevValue))
 	},
 
 	_googleCalendarEnabled: false,

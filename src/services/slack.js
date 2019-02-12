@@ -19,7 +19,7 @@ export default function triggerSlack() {
 			slack.users.profile.set({
 				token: status.slackToken,
 				profile: JSON.stringify({
-					"status_emoji": status.dnd ? ":no_bell:" : ":male-technologist:",
+					"status_emoji": status.dnd ? ":no_bell:" : status.slackBusyIcon,
 					"status_text": status.msg,
 					status_expiration,
 				})
@@ -40,6 +40,24 @@ export default function triggerSlack() {
 				"status_text": null
 			})
 		})
+	})
+
+	status.on('slackBusyIcon', function() {
+		if (status.slackToken.length === 0 || status.slackEnabled === false) return
+		
+		const token = status.slackToken
+
+		if (status.endTime && !status.dnd) {
+			const status_expiration = moment.utc(status.endTime).unix()
+			slack.users.profile.set({
+				token,
+				profile: JSON.stringify({
+					"status_emoji": status.slackBusyIcon,
+					"status_text": status.msg,
+					status_expiration,
+				})
+			})
+		}
 	})
 
 	app.once('before-quit', async function (event) {
