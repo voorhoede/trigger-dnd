@@ -42,18 +42,24 @@ export default function triggerSlack() {
 		})
 	})
 
-	app.on('before-quit', function () {
+	app.once('before-quit', async function (event) {
 		if (status.slackToken.length === 0 || status.slackEnabled === false) return
-
 		const token = status.slackToken
 
-		slack.dnd.endDnd({ token })
-		slack.users.profile.set({
-			token,
-			profile: JSON.stringify({
-				"status_emoji": null,
-				"status_text": null
+		event.preventDefault()
+
+		Promise.all([
+			slack.dnd.endDnd({ token }),
+			slack.users.profile.set({
+				token,
+				profile: JSON.stringify({
+					"status_emoji": null,
+					"status_text": null
+				})
 			})
+		]).then(() => {
+			app.quit()
 		})
+		
 	})
 }
