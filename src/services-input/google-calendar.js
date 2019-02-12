@@ -4,9 +4,13 @@ import status from '../main/status'
 import { google } from 'googleapis'
 import { app, BrowserWindow } from 'electron'
 import moment from 'moment'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 const TOKEN_PATH = path.join(app.getPath('userData'), 'google-calendar-token.json')
+let hasBootstrapped = false
 
 export default function googleCalendar() {
 	if (status.googleCalendarEnabled) {
@@ -30,23 +34,19 @@ status.on('googleCalendarEnabled', enabled => {
 })
 
 function bootstrap() {
+	if (hasBootstrapped) return
+	hasBootstrapped = true
 	status.googleToken === '' && getEvents()
 	setInterval(loop, 1000 * 1)
 	setInterval(loopFetchingNewEvents, 1000 * 60 * 15)
 }
 
 function getEvents() {
-	const { googleClientId, googleClientSecret, googleProjectId } = status
-
-	if (!googleClientId) return console.error('No google client id')
-	if (!googleClientSecret) return console.error('No google client secret')
-	if (!googleProjectId) return console.error('No google project id')
-
 	const credentials = {
 		installed: {
-				client_id: googleClientId,
-				client_secret: googleClientSecret,
-				project_id: googleProjectId,
+				client_id: process.env.GOOGLE_CLIENT_ID,
+				client_secret: process.env.GOOGLE_CLIENT_SECRET,
+				project_id: process.env.GOOGLE_PROJECT_ID,
 				auth_uri: "https://accounts.google.com/o/oauth2/auth",
 				token_uri: "https://www.googleapis.com/oauth2/v3/token",
 				auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
@@ -114,7 +114,13 @@ function getAccessToken(oAuth2Client, callback) {
 		handleCallback(newUrl)
 	})
 
-	authWindow.on('close', () => authWindow = null, false)
+	authWindow.on('close', () => {
+		if (!status.googleToken) {
+			hasBootstrapped = false
+			status.googleCalendarEnabled = false
+		}
+		authWindow = null
+	}, false)
 }
 
 function listEvents(auth) {

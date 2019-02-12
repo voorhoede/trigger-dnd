@@ -151,24 +151,6 @@
                 <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>
-            <v-list-tile @click="modals.googleClientId = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Client Id</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.googleClientId ? status.googleClientId : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile @click="modals.googleClientSecret = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Client Secret</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.googleClientSecret ? status.googleClientSecret : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile @click="modals.googleProjectId = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Project Id</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.googleProjectId ? status.googleProjectId : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
           </v-list>
         </v-card>
       </v-dialog>
@@ -257,28 +239,6 @@
       </transition>
 
       <transition>
-        <over-overlay v-if="modals.googleClientId">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Slack token</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Your Google Project Client Id</p>
-              <v-text-field
-                label="Token"
-                :value="status.googleClientId"
-                @change="event => changeStatusValue('googleClientId', event)"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.googleClientId = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
         <over-overlay v-if="modals.slackIcon">
           <v-card>
             <v-toolbar flat color="transparent">
@@ -295,50 +255,6 @@
             <v-card-actions>
               <v-spacer />
               <v-btn flat @click="modals.slackIcon = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
-        <over-overlay v-if="modals.googleClientSecret">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Slack token</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Your Google Project Client Secret</p>
-              <v-text-field
-                label="Token"
-                :value="status.googleClientSecret"
-                @change="event => changeStatusValue('googleClientSecret', event)"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.googleClientSecret = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
-        <over-overlay v-if="modals.googleProjectId">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Slack token</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Your Google Project Id</p>
-              <v-text-field
-                label="Token"
-                :value="status.googleProjectId"
-                @change="event => changeStatusValue('googleProjectId', event)"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.googleProjectId = false">Close</v-btn>
             </v-card-actions>
           </v-card>
         </over-overlay>
@@ -371,9 +287,6 @@ export default {
         defaultMsgOpen: false,
         slackTokenOpen: false,
         slackIcon: false,
-        googleClientId: false,
-        googleClientSecret: false,
-        googleProjectId: false,
       }
     }
   },

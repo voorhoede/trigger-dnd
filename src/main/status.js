@@ -22,9 +22,6 @@ const status = {
 		statusEnds: [],
 		googleCalendarEnabled: [],
 		googleToken: [],
-		googleClientId: [],
-		googleClientSecret: [],
-		googleProjectId: [],
 		googleCalendarEvents: [],
 		googleCalendarUntilNext: [],
 		googleCalendarIsFetching: [],
@@ -193,39 +190,6 @@ const status = {
 		this._googleToken = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.googleToken.forEach(fn => fn(this._googleToken, prevValue))
-	},
-
-	_googleClientId: '',
-	get googleClientId() {
-		return this._googleClientId
-	},
-	set googleClientId(value) {
-		const prevValue = this._googleClientId
-		this._googleClientId = value
-		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
-		this._listeners.googleClientId.forEach(fn => fn(this._googleClientId, prevValue))
-	},
-
-	_googleClientSecret: '',
-	get googleClientSecret() {
-		return this._googleClientSecret
-	},
-	set googleClientSecret(value) {
-		const prevValue = this._googleClientSecret
-		this._googleClientSecret = value
-		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
-		this._listeners.googleClientSecret.forEach(fn => fn(this._googleClientSecret, prevValue))
-	},
-
-	_googleProjectId: '',
-	get googleProjectId() {
-		return this._googleProjectId
-	},
-	set googleProjectId(value) {
-		const prevValue = this._googleProjectId
-		this._googleProjectId = value
-		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
-		this._listeners.googleProjectId.forEach(fn => fn(this._googleProjectId, prevValue))
 	},
 
 	_googleCalendarUntilNext: null,
