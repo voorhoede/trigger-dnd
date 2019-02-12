@@ -6,7 +6,7 @@ import { app, BrowserWindow } from 'electron'
 import moment from 'moment'
 import dotenv from 'dotenv'
 
-dotenv.config({ path: path.join(__dirname, '../.env') })
+dotenv.config({ path: path.join(__dirname, '../../.env') })
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 const TOKEN_PATH = path.join(app.getPath('userData'), 'google-calendar-token.json')
