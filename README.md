@@ -1,6 +1,6 @@
 # Trigger DnD
 
-🚨🚨**This app is currently in beta! It is under heavy development. Use at your own risk!**🚨🚨
+**🚨🚨This app is currently in beta! It is under heavy development. Use at your own risk!🚨🚨**
 
 With a push of a button silence notifications in MacOS, set Slack to Do Not Disturb and turn on a Luxafor light!
 
