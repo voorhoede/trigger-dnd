@@ -1,13 +1,14 @@
 {
   "name": "trigger-dnd",
   "productName": "Trigger DnD",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Trigger DnD modes all over the place",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "beforepublish": "rm -rf ./node_modules/.cache && rm -rf ./out && xattr -c . && xattr -cr ./src && xattr -d com.apple.quarantine . && xattr -dr com.apple.quarantine ./src",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\""
   },
