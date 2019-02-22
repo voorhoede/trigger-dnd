@@ -14,9 +14,11 @@ export default function () {
 		}
 	})
 
-	app.on('before-quit', () => {
-		if (status.osEnabled && status.dnd) {
-			doNotDisturb.disable()
-		}
+	app.once('before-quit', async event => {
+		event.preventDefault()
+
+		doNotDisturb.isEnabled()
+			.then(isEnabled => isEnabled && doNotDisturb.disable())
+			.then(() => app.quit())
 	})
 }
