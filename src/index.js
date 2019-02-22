@@ -80,11 +80,12 @@ autoLauncher.isEnabled()
       }
     }
   })
+  .catch(err => console.log(err.message))
 
 status.on('autoStart', autoStart => {
   autoStart 
-    ? autoLauncher.enable()
-    : autoLauncher.disable()
+    ? autoLauncher.enable().catch(err => console.log(err.message))
+    : autoLauncher.disable().catch(err => console.log(err.message))
 })
 
 if (isDevMode) enableLiveReload();
