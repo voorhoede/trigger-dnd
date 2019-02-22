@@ -83,17 +83,25 @@ if (status.autoStart) {
 }
 
 status.on('autoStart', autoStart => {
-  autoStart 
-    ? autoLauncher.enable().catch(err => {
-        console.log(err.message)
-        alert('Could not enable Open at startup')
-        status.autoStart = false
+  if (autoStart) {
+    autoLauncher.isEnabled()
+      .then(enabled => {
+        if (enabled === false) {
+          autoLauncher.enable().catch(err => {
+            console.log(err.message)
+            alert('Could not enable Open at startup')
+            status.autoStart = false
+          })
+        }
       })
-    : autoLauncher.disable().catch(err => {
+      .catch(err => console.log(err.message))
+  } else {
+    autoLauncher.disable().catch(err => {
       console.log(err.message)
       alert('Could not disable Open at startup')
       status.autoStart = true
     })
+  }
 })
 
 if (isDevMode) enableLiveReload();
