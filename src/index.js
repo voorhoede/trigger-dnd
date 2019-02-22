@@ -68,19 +68,15 @@ status.on('dnd', function (dnd) {
 
 
 const autoLauncher = new AutoLaunch({ name: 'Trigger DnD' })
-autoLauncher.isEnabled()
-  .then(enabled => {
-    if (status.autoStart === false) {
-      if (enabled) {
-        autoLauncher.disable()
-      }
-    } else {
+if (status.autoStart) {
+  autoLauncher.isEnabled()
+    .then(enabled => {
       if (enabled === false) {
         autoLauncher.enable()
       }
-    }
-  })
-  .catch(err => console.log(err.message))
+    })
+    .catch(err => console.log(err.message))
+}
 
 status.on('autoStart', autoStart => {
   autoStart 
