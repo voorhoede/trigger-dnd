@@ -142,8 +142,10 @@ function listEvents(auth) {
 		const events = res.data.items
 			.filter(event => {
 				if (status.googleCalendarDndOnly) {
+					const emojiObj = emojiTree(event.summary).find(({type}) => type === 'emoji')
+					const emoji = emojiObj ? emojiObj.text : undefined
 					const dndToken = /(\s)?\[dnd\]/i;
-					return dndToken.test(event.summary)
+					return dndToken.test(event.summary) || emoji === '🔕'
 				} else {
 					return true
 				}

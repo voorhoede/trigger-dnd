@@ -162,8 +162,8 @@
             </v-list-tile>
             <v-list-tile @click="() => toggleStatusValue('googleCalendarDndOnly')">
               <v-list-tile-content>
-                <v-list-tile-title>Only use events marked with [dnd]</v-list-tile-title>
-                <v-list-tile-sub-title v-if="status.googleCalendarDndOnly">Post events incl. [dnd] as status updates</v-list-tile-sub-title>
+                <v-list-tile-title>Only use events marked [dnd] or 🔕</v-list-tile-title>
+                <v-list-tile-sub-title v-if="status.googleCalendarDndOnly">Only use events with [dnd] or 🔕 in title</v-list-tile-sub-title>
                 <v-list-tile-sub-title v-else>Post all events as status updates</v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action style="min-width: 0;">
