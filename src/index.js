@@ -3,6 +3,7 @@ import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences, gl
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import log from 'electron-log'
+import AutoLaunch from 'auto-launch'
 import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
 import createTray from './main/tray'
 import { activate } from './main/main-window';
@@ -63,6 +64,27 @@ systemPreferences.subscribeNotification(
 status.on('dnd', function (dnd) {
   contextMenu.getMenuItemById('dnd-start').enabled = !dnd
   contextMenu.getMenuItemById('dnd-end').enabled = dnd
+})
+
+
+const autoLauncher = new AutoLaunch({ name: 'Trigger DnD' })
+autoLauncher.isEnabled()
+  .then(enabled => {
+    if (status.autoStart === false) {
+      if (enabled) {
+        autoLauncher.disable()
+      }
+    } else {
+      if (enabled === false) {
+        autoLauncher.enable()
+      }
+    }
+  })
+
+status.on('autoStart', autoStart => {
+  autoStart 
+    ? autoLauncher.enable()
+    : autoLauncher.disable()
 })
 
 if (isDevMode) enableLiveReload();

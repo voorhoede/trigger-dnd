@@ -4,6 +4,7 @@ import * as events from '../events'
 const status = {
 	_intervalId: null,
 	_listeners: {
+		autoStart: [],
 		cancelable: [],
 		version: [],
 		dark: [],
@@ -26,6 +27,17 @@ const status = {
 		googleCalendarDndOnly: [],
 		googleCalendarUntilNext: [],
 		googleCalendarIsFetching: [],
+	},
+
+	_autoStart: false,
+	get autoStart() {
+		return this._autoStart
+	},
+	set autoStart(value) {
+		const prevValue = this._autoStart
+		this._autoStart = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.autoStart.forEach(fn => fn(this._autoStart, prevValue))
 	},
 
 	_cancelable: true,

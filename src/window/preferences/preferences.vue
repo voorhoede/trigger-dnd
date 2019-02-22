@@ -100,6 +100,15 @@
                 <v-list-tile-sub-title>{{ status.msg ? status.msg : 'None' }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
+            <v-list-tile @click="() => toggleStatusValue('autoStart')">
+              <v-list-tile-content>
+                <v-list-tile-title>Open Trigger DnD at startup</v-list-tile-title>
+                <v-list-tile-sub-title>Open when you login to your computer</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action style="min-width: 0;">
+                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.autoStart"></v-switch>
+              </v-list-tile-action>
+            </v-list-tile>
 
             <v-divider></v-divider>
 

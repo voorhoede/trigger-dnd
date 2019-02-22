@@ -46,6 +46,7 @@ export async function loadPersistentData() {
 	})
 }
 
+status.on('autoStart', updateSetting('autoStart'))
 status.on('duration', updateSetting('duration'))
 status.on('msg', updateSetting('msg'))
 status.on('slackToken', updateSetting('slackToken'))
