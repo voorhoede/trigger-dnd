@@ -72,7 +72,11 @@ if (status.autoStart) {
   autoLauncher.isEnabled()
     .then(enabled => {
       if (enabled === false) {
-        autoLauncher.enable()
+        autoLauncher.enable().catch(err => {
+          console.log(err.message)
+          alert('Could not enable Open at startup')
+          status.autoStart = false
+        })
       }
     })
     .catch(err => console.log(err.message))
@@ -80,8 +84,16 @@ if (status.autoStart) {
 
 status.on('autoStart', autoStart => {
   autoStart 
-    ? autoLauncher.enable().catch(err => console.log(err.message))
-    : autoLauncher.disable().catch(err => console.log(err.message))
+    ? autoLauncher.enable().catch(err => {
+        console.log(err.message)
+        alert('Could not enable Open at startup')
+        status.autoStart = false
+      })
+    : autoLauncher.disable().catch(err => {
+      console.log(err.message)
+      alert('Could not disable Open at startup')
+      status.autoStart = true
+    })
 })
 
 if (isDevMode) enableLiveReload();
