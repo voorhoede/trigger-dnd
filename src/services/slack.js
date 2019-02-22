@@ -4,7 +4,7 @@ import moment from 'moment'
 import status from '../main/status'
 
 export default function triggerSlack() {
-	status.on('statusStarts', function () {
+	status.on('statusStarts', function ({ emoji }) {
 		if (status.slackToken.length === 0 || status.slackEnabled === false) return
 
 		const token = status.slackToken
@@ -19,7 +19,7 @@ export default function triggerSlack() {
 			slack.users.profile.set({
 				token: status.slackToken,
 				profile: JSON.stringify({
-					"status_emoji": status.dnd ? ":no_bell:" : status.slackBusyIcon,
+					"status_emoji": status.dnd ? ":no_bell:" : emoji || status.slackBusyIcon,
 					"status_text": status.msg,
 					status_expiration,
 				})

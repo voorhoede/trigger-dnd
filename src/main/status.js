@@ -231,7 +231,7 @@ const status = {
 	},
 
 	get startStatus() {
-		return function ({ dnd, duration, msg, cancelable = true } = {}) {
+		return function ({ dnd, duration, msg, cancelable = true, emoji = undefined } = {}) {
 			const _duration = duration || this.duration
 			this.dnd = dnd || this._dnd
 			this.msg = msg || this._msg
@@ -251,7 +251,7 @@ const status = {
 			if (this.dnd) {
 				this._listeners.dndStarts.forEach(fn => fn())
 			}
-			this._listeners.statusStarts.forEach(fn => fn())
+			this._listeners.statusStarts.forEach(fn => fn({ emoji }))
 		}
 	},
 

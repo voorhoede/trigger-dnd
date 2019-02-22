@@ -5,6 +5,7 @@ import { google } from 'googleapis'
 import { app, BrowserWindow } from 'electron'
 import moment from 'moment'
 import dotenv from 'dotenv'
+import emojiTree from 'emoji-tree'
 
 dotenv.config({ path: path.join(__dirname, '../../.env') })
 
@@ -192,14 +193,18 @@ function loop() {
 	// If we have a nextEvent and it is now
 	if (nextEvent && nextEvent.start.unix < now && nextEvent.end.unix > now) {
 		if (!status.endTime) {
+			const emojiObj = emojiTree(nextEvent.summary).find(({type}) => type === 'emoji')
+			const emoji = emojiObj ? emojiObj.text : undefined
 			const now = new moment()
 			const end = new moment(nextEvent.end.unix)
 			const dndToken = /(\s)?\[dnd\]/i;
-			const dnd = dndToken.test(nextEvent.summary)
+			const dnd = dndToken.test(nextEvent.summary) || emoji === '🔕'
 			const duration = moment.duration(end.diff(now)).asMinutes()
-			const msg = nextEvent.summary.replace(dndToken, '')
-			
-			status.startStatus({ dnd, duration, msg, cancelable: false })
+			const msg = nextEvent.summary
+				.replace(dndToken, '')
+				.replace(emoji, '')
+
+			status.startStatus({ dnd, duration, msg, cancelable: false, emoji })
 			status.googleCalendarUntilNext = null
 		}
 	}
