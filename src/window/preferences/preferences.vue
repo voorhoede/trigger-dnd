@@ -151,6 +151,16 @@
                 <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarEnabled"></v-switch>
               </v-list-tile-action>
             </v-list-tile>
+            <v-list-tile @click="() => toggleStatusValue('googleCalendarDndOnly')">
+              <v-list-tile-content>
+                <v-list-tile-title>Only use events marked with [dnd]</v-list-tile-title>
+                <v-list-tile-sub-title v-if="status.googleCalendarDndOnly">Post events incl. [dnd] as status updates</v-list-tile-sub-title>
+                <v-list-tile-sub-title v-else>Post all events as status updates</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action style="min-width: 0;">
+                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarDndOnly"></v-switch>
+              </v-list-tile-action>
+            </v-list-tile>
           </v-list>
         </v-card>
       </v-dialog>

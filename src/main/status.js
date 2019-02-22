@@ -23,6 +23,7 @@ const status = {
 		googleCalendarEnabled: [],
 		googleToken: [],
 		googleCalendarEvents: [],
+		googleCalendarDndOnly: [],
 		googleCalendarUntilNext: [],
 		googleCalendarIsFetching: [],
 	},
@@ -190,6 +191,17 @@ const status = {
 		this._googleToken = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.googleToken.forEach(fn => fn(this._googleToken, prevValue))
+	},
+
+	_googleCalendarDndOnly: true,
+	get googleCalendarDndOnly() {
+		return this._googleCalendarDndOnly
+	},
+	set googleCalendarDndOnly(value) {
+		const prevValue = this._googleCalendarDndOnly
+		this._googleCalendarDndOnly = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.googleCalendarDndOnly.forEach(fn => fn(this._googleCalendarDndOnly, prevValue))
 	},
 
 	_googleCalendarUntilNext: null,

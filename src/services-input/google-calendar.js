@@ -132,17 +132,26 @@ function listEvents(auth) {
 	calendar.events.list({
 		calendarId: 'primary',
 		timeMin: (new Date()).toISOString(),
-		maxResults: 1,
+		maxResults: 10,
 		singleEvents: true,
 		orderBy: 'startTime',
 	}, (err, res) => {
 		status.googleCalendarIsFetching = false
 		if (err) return console.log('The API returned an error: ' + err);
-		const events = res.data.items.map(event => {
-			event.start.unix = new Date(event.start.dateTime || event.start.date).getTime()
-			event.end.unix = new Date(event.end.dateTime || event.end.date).getTime()
-			return event
-		});
+		const events = res.data.items
+			.filter(event => {
+				if (status.googleCalendarDndOnly) {
+					const dndToken = /(\s)?\[dnd\]/i;
+					return dndToken.test(event.summary)
+				} else {
+					return true
+				}
+			})
+			.map(event => {
+				event.start.unix = new Date(event.start.dateTime || event.start.date).getTime()
+				event.end.unix = new Date(event.end.dateTime || event.end.date).getTime()
+				return event
+			});
 		if (events.length) {
 			const nextEvent = getNextEvent()
 			if (!nextEvent) {
