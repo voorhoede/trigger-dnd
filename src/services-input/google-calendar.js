@@ -12,6 +12,7 @@ dotenv.config({ path: path.join(__dirname, '../../.env') })
 const SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
 const TOKEN_PATH = path.join(app.getPath('userData'), 'google-calendar-token.json')
 let hasBootstrapped = false
+const noop = () => {}
 
 export default function googleCalendar() {
 	if (status.googleCalendarEnabled) {
@@ -37,12 +38,12 @@ status.on('googleCalendarEnabled', enabled => {
 function bootstrap() {
 	if (hasBootstrapped) return
 	hasBootstrapped = true
-	status.googleToken === '' && getEvents()
+	status.googleToken === '' && getEvents().catch(noop)
 	setInterval(loop, 1000 * 1)
 	setInterval(loopFetchingNewEvents, 1000 * 60 * 15)
 }
 
-function getEvents() {
+async function getEvents() {
 	const credentials = {
 		installed: {
 				client_id: process.env.GOOGLE_CLIENT_ID,
@@ -54,18 +55,25 @@ function getEvents() {
 				redirect_uris: ["http://localhost"]
 		}
 	}
-	authorize(credentials, listEvents)
+	return authorize(credentials, listEvents).catch(noop)
 }
 
 function authorize(credentials, callback) {
-	const { client_secret, client_id, redirect_uris } = credentials.installed
-	const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0])
+	return new Promise((resolve, reject) => {
+		const { client_secret, client_id, redirect_uris } = credentials.installed
+		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0])
 
-	fs.readFile(TOKEN_PATH, (err, token) => {
-		if (err) return getAccessToken(oAuth2Client, callback)
-		status.googleToken = token
-		oAuth2Client.setCredentials(JSON.parse(token))
-		callback(oAuth2Client)
+		fs.readFile(TOKEN_PATH, (err, token) => {
+			if (err) {
+				reject(err)
+				return getAccessToken(oAuth2Client, callback)
+			}
+			status.googleToken = token
+			oAuth2Client.setCredentials(JSON.parse(token))
+			callback(oAuth2Client)
+				.then(resolve)
+				.catch(noop)
+		})
 	})
 }
 
@@ -98,7 +106,7 @@ function getAccessToken(oAuth2Client, callback) {
           if (err) console.error(err);
           console.log('Token stored to', TOKEN_PATH);
         });
-        callback(oAuth2Client);
+        callback(oAuth2Client).catch(noop);
       });
 		}
 
@@ -124,47 +132,58 @@ function getAccessToken(oAuth2Client, callback) {
 	}, false)
 }
 
-function listEvents(auth) {
-	if (status.googleCalendarIsFetching) return console.log('Google calendar is fetching, aborting')
-
-	const calendar = google.calendar({version: 'v3', auth});
-	status.googleCalendarIsFetching = true
-
-	calendar.events.list({
-		calendarId: 'primary',
-		timeMin: (new Date()).toISOString(),
-		maxResults: 10,
-		singleEvents: true,
-		orderBy: 'startTime',
-	}, (err, res) => {
-		status.googleCalendarIsFetching = false
-		if (err) return console.log('The API returned an error: ' + err);
-		const events = res.data.items
-			.filter(event => {
-				if (status.googleCalendarDndOnly) {
-					const emojiObj = emojiTree(event.summary).find(({type}) => type === 'emoji')
-					const emoji = emojiObj ? emojiObj.text : undefined
-					const dndToken = /(\s)?\[dnd\]/i;
-					return dndToken.test(event.summary) || emoji === '🔕'
-				} else {
-					return true
-				}
-			})
-			.map(event => {
-				event.start.unix = new Date(event.start.dateTime || event.start.date).getTime()
-				event.end.unix = new Date(event.end.dateTime || event.end.date).getTime()
-				return event
-			});
-		if (events.length) {
-			const nextEvent = getNextEvent()
-			if (!nextEvent) {
-				events.forEach(item => status.googleCalendarEvents.push(item))
-			} else if (nextEvent.id !== events[0].id){
-				status.googleCalendarEvents.splice(0, status.googleCalendarEvents.length)
-				events.forEach(item => status.googleCalendarEvents.push(item))
-			}
+async function listEvents(auth) {
+	return new Promise((resolve, reject) => {
+		if (status.googleCalendarIsFetching) {
+			resolve()
+			return console.log('Google calendar is fetching, aborting')
 		}
-	});
+
+		const calendar = google.calendar({version: 'v3', auth});
+		status.googleCalendarIsFetching = true
+
+		calendar.events.list({
+			calendarId: 'primary',
+			timeMin: (new Date()).toISOString(),
+			maxResults: 10,
+			singleEvents: true,
+			orderBy: 'startTime',
+		}, (err, res) => {
+			status.googleCalendarIsFetching = false
+			if (err) {
+				reject('The API returned an error: ' + err)
+				return console.log('The API returned an error: ' + err);
+			}
+			const events = res.data.items
+				.filter(event => {
+					if (status.googleCalendarDndOnly) {
+						const emojiObj = emojiTree(event.summary).find(({type}) => type === 'emoji')
+						const emoji = emojiObj ? emojiObj.text : undefined
+						const dndToken = /(\s)?\[dnd\]/i;
+						return dndToken.test(event.summary) || emoji === '🔕'
+					} else {
+						return true
+					}
+				})
+				.map(event => {
+					event.start.unix = new Date(event.start.dateTime || event.start.date).getTime()
+					event.end.unix = new Date(event.end.dateTime || event.end.date).getTime()
+					return event
+				});
+			if (events.length) {
+				const nextEvent = getNextEvent()
+				if (!nextEvent) {
+					events.forEach(item => status.googleCalendarEvents.push(item))
+				} else if (nextEvent.start.unix !== events[0].start.unix || nextEvent.end.unix !== events[0].end.unix){
+					status.googleCalendarEvents.splice(0, status.googleCalendarEvents.length)
+					events.forEach(item => status.googleCalendarEvents.push(item))
+				}
+				resolve(nextEvent)
+				return
+			}
+			resolve()
+		});
+	})
 }
 
 function loopFetchingNewEvents() {
@@ -172,7 +191,7 @@ function loopFetchingNewEvents() {
 		return 
 	}
 
-	getEvents()
+	getEvents().catch(noop)
 }
 
 function loop() {
@@ -184,7 +203,7 @@ function loop() {
 	const nextEvent = getNextEvent()
 
 	if (nextEvent === null) {
-		getEvents()
+		getEvents().catch(noop)
 	}
 
 	// If we have a nextEvent and it is in the future
@@ -216,6 +235,10 @@ function loop() {
 		status.googleCalendarEvents.splice(0, status.googleCalendarEvents.length)
 	}
 }
+export const getCalendarEvents = 
+	() => getEvents()
+		.then(loop)
+		.catch((err) => console.log('getCalendarEvents failed', err))
 
 function getNextEvent() {
 	return status.googleCalendarEvents.reduce((previous, current) => {

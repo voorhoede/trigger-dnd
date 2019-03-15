@@ -12,7 +12,7 @@ const preferencesFile = path.join(app.getPath('userData'), 'preferences.json')
 async function createPreferencesFile() {
 	const fileContents = JSON.stringify({
 		duration: status.duration,
-		msg: status.msg,
+		userMsg: status.userMsg,
 		slackToken: status.slackToken,
 		slackEnabled: status.slackEnabled,
 		osEnabled: status.osEnabled,
@@ -48,7 +48,7 @@ export async function loadPersistentData() {
 
 status.on('autoStart', updateSetting('autoStart'))
 status.on('duration', updateSetting('duration'))
-status.on('msg', updateSetting('msg'))
+status.on('userMsg', updateSetting('userMsg'))
 status.on('slackToken', updateSetting('slackToken'))
 status.on('slackEnabled', updateSetting('slackEnabled'))
 status.on('slackBusyIcon', updateSetting('slackBusyIcon'))
