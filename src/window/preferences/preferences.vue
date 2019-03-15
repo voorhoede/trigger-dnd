@@ -322,6 +322,9 @@ export default {
       if (event.keyCode === 188 && event.metaKey === true) {
         this.openPreferences = true
       }
+      if (event.keyCode === 82 && event.metaKey === true) {
+        ipcRenderer.send(channel, events.RELOAD_EVENTS)
+      }
     })
   },
   methods: {

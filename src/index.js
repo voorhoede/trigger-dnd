@@ -49,7 +49,7 @@ const contextMenu = Menu.buildFromTemplate([
   },
   {
     label: 'Reload Calendar Events',
-    accelerator: 'Command+r',
+    accelerator: 'Command+R',
     click () { getCalendarEvents() }
   },
 	{ type: 'separator' },
@@ -169,6 +169,8 @@ ipcMain.on('preferences', (event, eventName, ...args) => {
       return setSlackToken(...args)
     case events.REQUEST_STATUS_PROP_CHANGE:
       return changeStatusProperty(...args)
+    case events.RELOAD_EVENTS:
+      return getCalendarEvents()
   }
 })
 
