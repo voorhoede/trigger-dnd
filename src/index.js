@@ -10,7 +10,7 @@ import { activate } from './main/main-window';
 import * as events from './events'
 import status from './main/status'
 import { loadPersistentData } from './main/persistent-data'
-import serviceInputGoogleCalendar from './services-input/google-calendar'
+import serviceInputGoogleCalendar, { getCalendarEvents } from './services-input/google-calendar'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
 import luxafor from './services/luxafor'
@@ -46,7 +46,12 @@ const contextMenu = Menu.buildFromTemplate([
     label: 'Preferences',
     accelerator: 'Command+,',
     click () { openPreferences(isDevMode) }
-	},
+  },
+  {
+    label: 'Reload Calendar Events',
+    accelerator: 'Command+r',
+    click () { getCalendarEvents() }
+  },
 	{ type: 'separator' },
 	{ label: 'Quit TriggerDnD',
 		accelerator: 'Command+Q',

@@ -127,6 +127,8 @@ function getAccessToken(oAuth2Client, callback) {
 function listEvents(auth) {
 	if (status.googleCalendarIsFetching) return console.log('Google calendar is fetching, aborting')
 
+	console.log('list events')
+
 	const calendar = google.calendar({version: 'v3', auth});
 	status.googleCalendarIsFetching = true
 
@@ -216,6 +218,7 @@ function loop() {
 		status.googleCalendarEvents.splice(0, status.googleCalendarEvents.length)
 	}
 }
+export const getCalendarEvents = () => { getEvents(); loop() }
 
 function getNextEvent() {
 	return status.googleCalendarEvents.reduce((previous, current) => {
