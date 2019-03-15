@@ -97,7 +97,7 @@
             <v-list-tile @click="modals.defaultMsgOpen = true">
               <v-list-tile-content>
                 <v-list-tile-title>Status message</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.msg ? status.msg : 'None' }}</v-list-tile-sub-title>
+                <v-list-tile-sub-title>{{ status.userMsg ? status.userMsg : 'None' }}</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
             <v-list-tile @click="() => toggleStatusValue('autoStart')">
@@ -223,7 +223,7 @@
               <v-text-field
                 label="Default status message"
                 persistent-hint
-                :value="status.msg"
+                :value="status.userMsg"
                 @change="changeMsg"
               />
             </v-card-text>

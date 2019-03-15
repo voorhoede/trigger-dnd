@@ -194,7 +194,7 @@ function triggerStatus() {
 }
 
 function setMsg(msg) {
-  status.msg = msg
+  status.userMsg = msg
 }
 
 function setDuration(duration) {

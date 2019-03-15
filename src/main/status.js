@@ -10,6 +10,7 @@ const status = {
 		dark: [],
 		dnd: [],
 		msg: [],
+		userMsg: [],
 		slackToken: [],
 		slackEnabled: [],
 		slackBusyIcon: [],
@@ -82,6 +83,17 @@ const status = {
 		this._dnd = value
 		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
 		this._listeners.dnd.forEach(fn => fn(this._dnd, prevValue))
+	},
+
+	_userMsg: '',
+	get userMsg() {
+		return this._userMsg
+	},
+	set userMsg(value) {
+		const prevValue = this._userMsg
+		this._userMsg = value
+		BrowserWindow.getAllWindows().forEach(this.sendCurrentStatus.bind(this))
+		this._listeners.userMsg.forEach(fn => fn(this._userMsg, prevValue))
 	},
 
 	_msg: '',
@@ -246,7 +258,7 @@ const status = {
 		return function ({ dnd, duration, msg, cancelable = true, emoji = undefined } = {}) {
 			const _duration = duration || this.duration
 			this.dnd = dnd || this._dnd
-			this.msg = msg || this._msg
+			this.msg = msg || this._userMsg
 			this.endTime = Date.now() + (_duration * 1000 * 60)
 			this.remainingTime = this.endTime - Date.now()
 			this.cancelable = cancelable
@@ -278,6 +290,7 @@ const status = {
 			this.dnd = false
 			this.endTime = null
 			this.cancelable = true
+			this.msg = this._userMsg
 			this._listeners.statusEnds.forEach(fn => fn())
 		}
 	}
