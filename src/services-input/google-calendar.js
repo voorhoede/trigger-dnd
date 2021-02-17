@@ -88,6 +88,7 @@ function getAccessToken(oAuth2Client, callback) {
 	authWindow.show()
 
 	function handleCallback(url) {
+		console.log(url);
 		const params = (new URL(url)).searchParams
 		const code = params.get('code')
 		const error = params.get('error')
@@ -119,9 +120,9 @@ function getAccessToken(oAuth2Client, callback) {
 		handleCallback(url)
 	})
 
-	authWindow.webContents.on('did-get-redirect-request', (event, oldUrl, newUrl) => {
-		handleCallback(newUrl)
-	})
+	authWindow.webContents.on("will-redirect", (event, url) => {
+    handleCallback(url);
+  });
 
 	authWindow.on('close', () => {
 		if (!status.googleToken) {
