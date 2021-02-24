@@ -1,16 +1,12 @@
 <template>
   <div @keydown.esc="escPressed">
-    <v-app
-      :dark="status.dark"
-      :style="{
-        'background-color': status.dark ? '#263238' : 'transparent'
-      }">
-      <v-toolbar flat color="transparent">
+    <v-app>
+      <v-app-bar color="transparent" app>
         <v-spacer />
         <v-btn icon @click="openPreferences = true">
-          <v-icon :color="status.dark ? 'primary' : 'accent'">settings</v-icon>
+          <v-icon>settings</v-icon>
         </v-btn>
-      </v-toolbar>
+      </v-app-bar>
 
       <v-layout align-center justify-center>
         <v-layout align-center justify-center>
@@ -32,11 +28,10 @@
             color="accent"
           >
           <v-layout align-center justify-center column>
-            <span :class="status.dark ? 'primary--text' : 'accent--text'">{{ remainingTime }}</span>
-            <v-btn 
+            <span>{{ remainingTime }}</span>
+            <v-btn
               v-if="status.cancelable"
-              :color="status.dark ? 'primary' : 'accent'"
-              @click="deactivateDND" flat>
+              @click="deactivateDND" text>
               end now
             </v-btn>
           </v-layout>
@@ -66,12 +61,12 @@
         </span>
       </v-footer>
 
-      <v-dialog 
+      <v-dialog
         v-model="openPreferences"
         fullscreen
         transition="dialog-bottom-transition">
         <v-card>
-          <v-toolbar color="primary" light fixed>
+          <v-toolbar color="primary" light>
             <v-spacer></v-spacer>
             <v-toolbar-title>Settings</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -80,96 +75,90 @@
             </v-btn>
           </v-toolbar>
 
-          <v-list
-            two-line
-            subheader
-            :style="{
-              'padding-top': '4rem',
-              'background-color': status.dark ? '#263238' : null
-            }">
+          <v-list two-line subheader>
             <v-subheader>Defaults</v-subheader>
-            <v-list-tile @click="modals.defaultDurationOpen = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Duration</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.duration }} minutes</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile @click="modals.defaultMsgOpen = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Status message</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.userMsg ? status.userMsg : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile @click="() => toggleStatusValue('autoStart')">
-              <v-list-tile-content>
-                <v-list-tile-title>Open Trigger DnD at startup</v-list-tile-title>
-                <v-list-tile-sub-title>Open when you login to your computer</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action style="min-width: 0;">
-                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.autoStart"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
+            <v-list-item @click="modals.defaultDurationOpen = true">
+              <v-list-item-content>
+                <v-list-item-title>Duration</v-list-item-title>
+                <v-list-item-subtitle>{{ status.duration }} minutes</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="modals.defaultMsgOpen = true">
+              <v-list-item-content>
+                <v-list-item-title>Status message</v-list-item-title>
+                <v-list-item-subtitle>{{ status.userMsg ? status.userMsg : 'None' }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="() => toggleStatusValue('autoStart')">
+              <v-list-item-content>
+                <v-list-item-title>Open Trigger DnD at startup</v-list-item-title>
+                <v-list-item-subtitle>Open when you login to your computer</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action style="min-width: 0;">
+                <v-switch :input-value="status.autoStart"></v-switch>
+              </v-list-item-action>
+            </v-list-item>
 
             <v-divider></v-divider>
 
             <v-subheader>Slack</v-subheader>
-            <v-list-tile @click="toggleSlackEnabled" :disabled="!status.slackToken">
-              <v-list-tile-content>
-                <v-list-tile-title>Enabled</v-list-tile-title>
-                <v-list-tile-sub-title>Trigger Slacks Do Not Disturb feature</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action style="min-width: 0;">
-                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.slackEnabled"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile @click="modals.slackTokenOpen = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Token</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.slackToken ? status.slackToken : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            <v-list-tile @click="modals.slackIcon = true">
-              <v-list-tile-content>
-                <v-list-tile-title>Busy icon</v-list-tile-title>
-                <v-list-tile-sub-title>{{ status.slackBusyIcon ? status.slackBusyIcon : 'None' }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+            <v-list-item @click="toggleSlackEnabled" :disabled="!status.slackToken">
+              <v-list-item-content>
+                <v-list-item-title>Enabled</v-list-item-title>
+                <v-list-item-subtitle>Trigger Slacks Do Not Disturb feature</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action style="min-width: 0;">
+                <v-switch :input-value="status.slackEnabled"></v-switch>
+              </v-list-item-action>
+            </v-list-item>
+            <v-list-item @click="modals.slackTokenOpen = true">
+              <v-list-item-content>
+                <v-list-item-title>Token</v-list-item-title>
+                <v-list-item-subtitle>{{ status.slackToken ? status.slackToken : 'None' }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item @click="modals.slackIcon = true">
+              <v-list-item-content>
+                <v-list-item-title>Busy icon</v-list-item-title>
+                <v-list-item-subtitle>{{ status.slackBusyIcon ? status.slackBusyIcon : 'None' }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
             <v-divider></v-divider>
 
             <v-subheader>Mac OS</v-subheader>
-            <v-list-tile @click="toggleOsEnabled">
-              <v-list-tile-content>
-                <v-list-tile-title>Enabled</v-list-tile-title>
-                <v-list-tile-sub-title>Trigger Mac OS Do Not Disturb feature</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action style="min-width: 0;">
-                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.osEnabled"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
+            <v-list-item @click="toggleOsEnabled">
+              <v-list-item-content>
+                <v-list-item-title>Enabled</v-list-item-title>
+                <v-list-item-subtitle>Trigger Mac OS Do Not Disturb feature</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action style="min-width: 0;">
+                <v-switch :input-value="status.osEnabled"></v-switch>
+              </v-list-item-action>
+            </v-list-item>
 
             <v-divider></v-divider>
 
             <v-subheader>Google Calendar</v-subheader>
-            <v-list-tile @click="() => toggleStatusValue('googleCalendarEnabled')">
-              <v-list-tile-content>
-                <v-list-tile-title>Enabled</v-list-tile-title>
-                <v-list-tile-sub-title>Use Google Calendar events as DnD trigger</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action style="min-width: 0;">
-                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarEnabled"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-list-tile @click="() => toggleStatusValue('googleCalendarDndOnly')">
-              <v-list-tile-content>
-                <v-list-tile-title>Only use events marked [dnd] or 🔕</v-list-tile-title>
-                <v-list-tile-sub-title v-if="status.googleCalendarDndOnly">Only use events with [dnd] or 🔕 in title</v-list-tile-sub-title>
-                <v-list-tile-sub-title v-else>Post all events as status updates</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action style="min-width: 0;">
-                <v-switch :color="status.dark ? 'primary': 'accent'" :value="status.googleCalendarDndOnly"></v-switch>
-              </v-list-tile-action>
-            </v-list-tile>
+            <v-list-item @click="() => toggleStatusValue('googleCalendarEnabled')">
+              <v-list-item-content>
+                <v-list-item-title>Enabled</v-list-item-title>
+                <v-list-item-subtitle>Use Google Calendar events as DnD trigger</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action style="min-width: 0;">
+                <v-switch :input-value="status.googleCalendarEnabled"></v-switch>
+              </v-list-item-action>
+            </v-list-item>
+            <v-list-item @click="() => toggleStatusValue('googleCalendarDndOnly')">
+              <v-list-item-content>
+                <v-list-item-title>Only use events marked [dnd] or 🔕</v-list-item-title>
+                <v-list-item-subtitle v-if="status.googleCalendarDndOnly">Only use events with [dnd] or 🔕 in title</v-list-item-subtitle>
+                <v-list-item-subtitle v-else>Post all events as status updates</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action style="min-width: 0;">
+                <v-switch :input-value="status.googleCalendarDndOnly"></v-switch>
+              </v-list-item-action>
+            </v-list-item>
           </v-list>
         </v-card>
       </v-dialog>
@@ -196,8 +185,9 @@
 
                 <v-flex xs2>
                   <v-text-field
+                    hide-details
                     :value="status.duration"
-                    class="mt-0"
+                    class="mt-0 pt-0"
                     type="number"
                     @change="changeDuration"
                   />
@@ -309,6 +299,35 @@ export default {
       }
     }
   },
+  computed: {
+    endTime() {
+      return this.status.endTime > 0
+        ? moment(this.status.endTime).format('HH:mm:ss')
+        : 0
+    },
+    remainingTime() {
+      return this.status.remainingTime > 0
+        ? moment(this.status.remainingTime).format('mm:ss')
+        : 0
+    },
+
+    remainingTime() {
+      return this.status.remainingTime > 0
+        ? moment(this.status.remainingTime).format('mm:ss')
+        : 0
+    },
+    googleCalendarUntilNext() {
+      return this.status.googleCalendarUntilNext > 0
+        ? moment.utc(this.status.googleCalendarUntilNext).format('HH:mm:ss')
+        : 0
+    },
+  },
+  watch: {
+    'status.dark'() {
+      this.$vuetify.theme.light= !this.status.dark;
+      this.$vuetify.theme.dark = this.status.dark;
+    }
+  },
   mounted() {
     ipcRenderer.send(events.APP_MOUNTED)
     ipcRenderer.on(events.CURRENT_STATUS, (event, status) => {
@@ -378,29 +397,14 @@ export default {
       }
     },
   },
-  computed: {
-    endTime() {
-      return this.status.endTime > 0 
-        ? moment(this.status.endTime).format('HH:mm:ss')
-        : 0
-    },
-    remainingTime() {
-      return this.status.remainingTime > 0 
-        ? moment(this.status.remainingTime).format('mm:ss')
-        : 0
-    },
-
-    remainingTime() {
-      return this.status.remainingTime > 0 
-        ? moment(this.status.remainingTime).format('mm:ss')
-        : 0
-    },
-    googleCalendarUntilNext() {
-      return this.status.googleCalendarUntilNext > 0 
-        ? moment.utc(this.status.googleCalendarUntilNext).format('HH:mm:ss')
-        : 0
-    },
-  },
+  
 }
 </script>
 
+<style>
+.v-dialog > .v-card > .v-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+}
+</style>

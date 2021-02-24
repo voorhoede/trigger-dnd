@@ -1,5 +1,8 @@
-import { BrowserWindow, systemPreferences } from 'electron'
+import {BrowserWindow, nativeTheme } from 'electron'
 import * as events from '../events'
+
+// TODO: look into the following deprecation warning: DeprecationWarning: Passing functions, DOM objects and other non-cloneable JavaScript objects to IPC methods is deprecated and will throw an exception beginning with Electron 9.
+process.noDeprecation = true
 
 const status = {
 	_intervalId: null,
@@ -63,7 +66,7 @@ const status = {
 		this._listeners.version.forEach(fn => fn(this._version, prevValue))
 	},
 
-	_dark: systemPreferences.isDarkMode(),
+	_dark: !nativeTheme.shouldUseDarkColors,
 	get dark() {
 		return this._dark
 	},

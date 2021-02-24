@@ -1,5 +1,11 @@
-import path from 'path'
-import { app, BrowserWindow, Tray, Menu, session, ipcMain, systemPreferences, globalShortcut } from 'electron';
+import {
+  app,
+  Menu,
+  ipcMain,
+  systemPreferences,
+  globalShortcut,
+  nativeTheme,
+} from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import log from 'electron-log'
@@ -62,7 +68,7 @@ const contextMenu = Menu.buildFromTemplate([
 systemPreferences.subscribeNotification(
 	'AppleInterfaceThemeChangedNotification',
 	() => {
-    status.dark = systemPreferences.isDarkMode()
+    status.dark = !nativeTheme.shouldUseDarkColors;
   }
 )
 

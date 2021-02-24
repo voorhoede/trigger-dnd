@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Trigger DnD</title>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
-    <link href="../../../node_modules/vuetify/dist/vuetify.css" rel="stylesheet">
-  </head>
-  <body style="-webkit-app-region: drag;">
-    <div id="app"></div>
-  </body>
 
-  <script>
+<head>
+  <meta charset="utf-8">
+  <title>Trigger DnD</title>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons' rel="stylesheet">
+  <link href="../../../node_modules/vuetify/dist/vuetify.css" rel="stylesheet">
+</head>
+
+<body style="-webkit-app-region: drag;">
+  <div id="app"></div>
+</body>
+
+<script>
   import Vue from 'vue';
   import Vuetify from 'vuetify'
   import Preferences from './preferences';
 
-  Vue.use(Vuetify, {
-    theme: {
-    primary: '#FFEA00',
-    accent: '#0277BD',
-  }
-  })
+  Vue.use(Vuetify)
 
-  new Vue(Preferences).$mount('#app');
-  </script>
+  new Vue({
+    render: h => h(Preferences),
+    vuetify: new Vuetify({
+      theme: {
+        options: {
+          customProperties: true,
+        },
+        themes: {
+          dark: {
+            primary: '#FFEA00',
+            accent: '#0277BD',
+          },
+          light: {
+            primary: '#FFEA00',
+            accent: '#0277BD',
+          }
+        },
+        dark: true,
+      },
+    })
+  }).$mount('#app');
+</script>
+
 </html>
