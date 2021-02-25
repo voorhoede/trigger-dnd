@@ -66,7 +66,7 @@ const status = {
     this._listeners.version.forEach((fn) => fn(this._version, prevValue))
   },
 
-  _dark: !nativeTheme.shouldUseDarkColors,
+  _dark: nativeTheme.shouldUseDarkColors,
   get dark() {
     return this._dark
   },

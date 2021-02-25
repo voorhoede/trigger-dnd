@@ -1,5 +1,5 @@
 import path from 'path'
-import { app, BrowserWindow, systemPreferences, Menu, ipcMain } from 'electron'
+import { app, BrowserWindow, nativeTheme, Menu, ipcMain } from 'electron'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import status from './status'
 import * as events from '../events'
@@ -75,7 +75,7 @@ const createWindow = async (isDevMode) => {
     },
     show: isDevMode,
     titleBarStyle: 'hiddenInset',
-    backgroundColor: status.dark ? '#121212' : '#fff',
+    backgroundColor: !nativeTheme.shouldUseDarkColors ? '#fff' : '#121212',
   })
 
   // and load the index.html of the app.
