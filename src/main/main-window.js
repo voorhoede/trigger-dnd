@@ -76,7 +76,7 @@ const createWindow = async (isDevMode) => {
 		},
 		show: isDevMode,
 		titleBarStyle: 'hiddenInset',
-		backgroundColor: status.dark ? '#263238' : '#fff'
+		backgroundColor: status.dark ? '#121212' : '#fff'
 	});
 
 	// and load the index.html of the app.

@@ -1,5 +1,5 @@
 import path from 'path'
-import { Tray, Menu, systemPreferences } from 'electron'
+import { Tray, nativeTheme, systemPreferences } from 'electron'
 import status from './status'
 
 const iconOffWhite = path.join(__dirname, '../assets/off.png')
@@ -27,13 +27,13 @@ export default function createTray(contextMenu) {
 
 function getCorrectIcon() {
 	if (status.dnd) {
-		return systemPreferences.isDarkMode() 
+		return !nativeTheme.shouldUseDarkColors
 			? iconOffWhite
 			: iconOffDark
 	} else if (status.endTime) {
 		return iconOnBlue
 	} else {
-		return systemPreferences.isDarkMode() 
+		return !nativeTheme.shouldUseDarkColors
 			? iconOnWhite
 			: iconOnDark
 	}
