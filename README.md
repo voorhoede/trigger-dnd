@@ -17,12 +17,12 @@ Click the tray icon choose `Preferences`:
 ### Defaults
 
 * **Duration**: Default minutes of a Do Not Disturb session
-* **Status message**: What message should be posted to Slack when you are in Do Not Sidturb mode
+* **Status message**: What message should be posted to Slack when you are in Do Not Disturb mode
 
 ### Slack
 
 * **Enabled**: Toggle posting to Slack on and off
-* **Token**: Your Slack Web API token, get one [here](https://api.slack.com/custom-integrations/legacy-tokens) (about in the middle of the page). Choose your Slack workspace and press on `Create token`. It should look like this: `xoxp-12345678...
+* **Token**: Your Slack Web API token, get one [here](https://api.slack.com/custom-integrations/legacy-tokens) (about in the middle of the page). Choose your Slack workspace and press on `Create token`. It should look like this: `xoxp-12345678...`
 * **Busy icon**: Which icon should Slack use as your status icon, defaults to: `:female-technologist:`
 
 ### Mac OS
