@@ -8,37 +8,33 @@ const iconOnBlue = path.join(__dirname, '../assets/on-blue.png')
 const iconOffDark = path.join(__dirname, '../assets/off.png')
 const iconOnDark = path.join(__dirname, '../assets/on-black.png')
 
-let tray;
+let tray
 
 systemPreferences.subscribeNotification(
-	'AppleInterfaceThemeChangedNotification',
-	setIconToTray
+  'AppleInterfaceThemeChangedNotification',
+  setIconToTray,
 )
 
 status.on('statusStarts', setIconToTray)
 status.on('statusEnds', setIconToTray)
 
 export default function createTray(contextMenu) {
-	const icon = getCorrectIcon()
-	tray = new Tray(icon)
-	tray.setContextMenu(contextMenu)
-	return tray
+  const icon = getCorrectIcon()
+  tray = new Tray(icon)
+  tray.setContextMenu(contextMenu)
+  return tray
 }
 
 function getCorrectIcon() {
-	if (status.dnd) {
-		return !nativeTheme.shouldUseDarkColors
-			? iconOffWhite
-			: iconOffDark
-	} else if (status.endTime) {
-		return iconOnBlue
-	} else {
-		return !nativeTheme.shouldUseDarkColors
-			? iconOnWhite
-			: iconOnDark
-	}
+  if (status.dnd) {
+    return !nativeTheme.shouldUseDarkColors ? iconOffWhite : iconOffDark
+  } else if (status.endTime) {
+    return iconOnBlue
+  } else {
+    return !nativeTheme.shouldUseDarkColors ? iconOnWhite : iconOnDark
+  }
 }
 
 function setIconToTray() {
-	tray.setImage(getCorrectIcon())
+  tray.setImage(getCorrectIcon())
 }

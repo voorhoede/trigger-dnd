@@ -10,7 +10,7 @@
     "make": "electron-forge make",
     "beforepublish": "rm -rf ./node_modules/.cache && rm -rf ./out && xattr -c . && xattr -cr ./src && xattr -d com.apple.quarantine . && xattr -dr com.apple.quarantine ./src",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "prettier-format": "prettier --config .prettierrc '**/*.{js,vue}' --write"
   },
   "keywords": [],
   "author": "petergoes",
@@ -71,7 +71,6 @@
     "electron-log": "4.3.2",
     "electron-squirrel-startup": "1.0.0",
     "emoji-tree": "1.1.2",
-    "eslint": "7.20.0",
     "googleapis": "67.1.0",
     "moment": "2.29.1",
     "node-luxafor": "2.1.0",
@@ -86,6 +85,10 @@
     "babel-preset-env": "1.7.0",
     "babel-preset-react": "6.24.1",
     "electron-forge": "5.2.4",
-    "electron-prebuilt-compile": "8.2.0"
+    "electron-prebuilt-compile": "8.2.0",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^8.0.0",
+    "eslint-plugin-vue": "^7.6.0",
+    "prettier": "^2.2.1"
   }
 }

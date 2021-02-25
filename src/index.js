@@ -5,18 +5,25 @@ import {
   systemPreferences,
   globalShortcut,
   nativeTheme,
-} from "electron";
-import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer';
-import { enableLiveReload } from 'electron-compile';
+} from 'electron'
+import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
+import { enableLiveReload } from 'electron-compile'
 import log from 'electron-log'
 import AutoLaunch from 'auto-launch'
-import createMainWindow, { activate as activateMainWindow, show as showMainWindow, hide as hideMainWindow, openPreferences } from './main/main-window'
+import createMainWindow, {
+  activate as activateMainWindow,
+  show as showMainWindow,
+  hide as hideMainWindow,
+  openPreferences,
+} from './main/main-window'
 import createTray from './main/tray'
-import { activate } from './main/main-window';
+import { activate } from './main/main-window'
 import * as events from './events'
 import status from './main/status'
 import { loadPersistentData } from './main/persistent-data'
-import serviceInputGoogleCalendar, { getCalendarEvents } from './services-input/google-calendar'
+import serviceInputGoogleCalendar, {
+  getCalendarEvents,
+} from './services-input/google-calendar'
 import triggerSlack from './services/slack'
 import triggerSystemDnd from './services/system-dnd'
 import luxafor from './services/luxafor'
@@ -25,51 +32,62 @@ import './main/version'
 
 updateElectronApp({
   repo: 'voorhoede-labs/trigger-dnd',
-  logger: log
+  logger: log,
 })
 
-const isDevMode = process.execPath.match(/[\\/]electron/);
+const isDevMode = process.execPath.match(/[\\/]electron/)
 const contextMenu = Menu.buildFromTemplate([
   {
     label: 'Start DnD',
     id: 'dnd-start',
     accelerator: 'Control+Alt+Meta+D',
-    click () { setDndActive() }
+    click() {
+      setDndActive()
+    },
   },
   {
     label: 'End DnD',
     id: 'dnd-end',
     enabled: false,
-    click () { setDndDeactive() }
-	},
+    click() {
+      setDndDeactive()
+    },
+  },
   { type: 'separator' },
   {
     label: 'Open Trigger DnD',
     accelerator: 'Shift+Control+Alt+Meta+D',
-    click () { showMainWindow(isDevMode) }
-	},
-	{
+    click() {
+      showMainWindow(isDevMode)
+    },
+  },
+  {
     label: 'Preferences',
     accelerator: 'Command+,',
-    click () { openPreferences(isDevMode) }
+    click() {
+      openPreferences(isDevMode)
+    },
   },
   {
     label: 'Reload Calendar Events',
     accelerator: 'Command+R',
-    click () { getCalendarEvents() }
+    click() {
+      getCalendarEvents()
+    },
   },
-	{ type: 'separator' },
-	{ label: 'Quit TriggerDnD',
-		accelerator: 'Command+Q',
-		selector: 'terminate:',
-	}
+  { type: 'separator' },
+  {
+    label: 'Quit TriggerDnD',
+    accelerator: 'Command+Q',
+    selector: 'terminate:',
+  },
 ])
 
 systemPreferences.subscribeNotification(
-	'AppleInterfaceThemeChangedNotification',
-	() => {
-    status.dark = !nativeTheme.shouldUseDarkColors;
-  }
+  'AppleInterfaceThemeChangedNotification',
+  () => {
+    status.dark = !nativeTheme.shouldUseDarkColors
+  },
 )
 
 status.on('dnd', function (dnd) {
@@ -77,37 +95,38 @@ status.on('dnd', function (dnd) {
   contextMenu.getMenuItemById('dnd-end').enabled = dnd
 })
 
-
 const autoLauncher = new AutoLaunch({ name: 'Trigger DnD' })
 if (status.autoStart) {
-  autoLauncher.isEnabled()
-    .then(enabled => {
+  autoLauncher
+    .isEnabled()
+    .then((enabled) => {
       if (enabled === false) {
-        autoLauncher.enable().catch(err => {
+        autoLauncher.enable().catch((err) => {
           console.log(err.message)
           alert('Could not enable Open at startup')
           status.autoStart = false
         })
       }
     })
-    .catch(err => console.log(err.message))
+    .catch((err) => console.log(err.message))
 }
 
-status.on('autoStart', autoStart => {
+status.on('autoStart', (autoStart) => {
   if (autoStart) {
-    autoLauncher.isEnabled()
-      .then(enabled => {
+    autoLauncher
+      .isEnabled()
+      .then((enabled) => {
         if (enabled === false) {
-          autoLauncher.enable().catch(err => {
+          autoLauncher.enable().catch((err) => {
             console.log(err.message)
             alert('Could not enable Open at startup')
             status.autoStart = false
           })
         }
       })
-      .catch(err => console.log(err.message))
+      .catch((err) => console.log(err.message))
   } else {
-    autoLauncher.disable().catch(err => {
+    autoLauncher.disable().catch((err) => {
       console.log(err.message)
       alert('Could not disable Open at startup')
       status.autoStart = true
@@ -115,7 +134,7 @@ status.on('autoStart', autoStart => {
   }
 })
 
-if (isDevMode) enableLiveReload();
+if (isDevMode) enableLiveReload()
 
 app.on('ready', () => {
   // Hide dock icon, not needed for tray application
@@ -141,15 +160,15 @@ app.on('ready', () => {
   globalShortcut.register('Shift+Control+Alt+Meta+D', () => {
     showMainWindow(isDevMode)
   })
-});
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    app.quit();
+    app.quit()
   }
-});
+})
 
-app.on('activate', () => activateMainWindow(isDevMode));
+app.on('activate', () => activateMainWindow(isDevMode))
 
 ipcMain.on('preferences', (event, eventName, ...args) => {
   switch (eventName) {
@@ -189,9 +208,7 @@ function setDndDeactive() {
 }
 
 function toggleDnd() {
-  status.dnd
-    ? status.cancelStatus()
-    : status.startStatus({ dnd: true })
+  status.dnd ? status.cancelStatus() : status.startStatus({ dnd: true })
 }
 
 function toggleSlackEnabled() {
@@ -222,11 +239,10 @@ function changeStatusProperty(property, value) {
   status[property] = value
 }
 
-loadPersistentData()
-  .then(() => {
-    triggerSlack()
-    triggerSystemDnd()
+loadPersistentData().then(() => {
+  triggerSlack()
+  triggerSystemDnd()
 
-    luxafor()
-    serviceInputGoogleCalendar()
-  })
+  luxafor()
+  serviceInputGoogleCalendar()
+})
