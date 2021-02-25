@@ -1,14 +1,14 @@
 <template>
   <div @keydown.esc="escPressed">
     <v-app>
-      <v-app-bar color="transparent" app>
+      <v-app-bar app>
         <v-spacer />
         <v-btn icon @click="openPreferences = true">
           <v-icon>settings</v-icon>
         </v-btn>
       </v-app-bar>
 
-      <v-layout align-center justify-center>
+      <v-layout class="mt-14" align-center justify-center>
         <v-layout align-center justify-center>
           <v-btn
             v-if="!status.endTime"
