@@ -66,6 +66,9 @@
         v-model="openPreferences"
         fullscreen
         transition="dialog-bottom-transition"
+        @click:outside="(event) => event.preventDefault"
+        persistent
+        no-click-animation
       >
         <v-card>
           <v-toolbar color="primary" light>
@@ -200,115 +203,116 @@
             </v-list-item>
           </v-list>
         </v-card>
+
+        <transition>
+          <over-overlay v-if="modals.defaultDurationOpen">
+            <v-card>
+              <v-toolbar flat color="transparent">
+                <span class="headline">Default duration</span>
+              </v-toolbar>
+              <v-card-text>
+                <p>Default duration in minutes</p>
+                <v-layout row wrap justify-space-between>
+                  <v-flex xs9>
+                    <v-slider
+                      style="-webkit-app-region: no-drag"
+                      :value="status.duration"
+                      :min="1"
+                      :max="180"
+                      @input="(event) => (status.duration = event)"
+                      @change="changeDuration"
+                    />
+                  </v-flex>
+
+                  <v-flex xs2>
+                    <v-text-field
+                      hide-details
+                      :value="status.duration"
+                      class="mt-0 pt-0"
+                      type="number"
+                      @change="changeDuration"
+                      @keypress.enter="modals.defaultDurationOpen = false"
+                    />
+                  </v-flex>
+                </v-layout>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn @click="modals.defaultDurationOpen = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </over-overlay>
+        </transition>
+
+        <transition>
+          <over-overlay v-if="modals.defaultMsgOpen">
+            <v-card>
+              <v-toolbar color="transparent">
+                <span class="headline">Status message</span>
+              </v-toolbar>
+              <v-card-text>
+                <p>The default message set when dnd is active</p>
+                <v-text-field
+                  label="Default status message"
+                  persistent-hint
+                  :value="status.userMsg"
+                  @change="changeMsg"
+                  @keypress.enter="modals.defaultMsgOpen = false"
+                />
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn @click="modals.defaultMsgOpen = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </over-overlay>
+        </transition>
+
+        <transition>
+          <over-overlay v-if="modals.slackTokenOpen">
+            <v-card>
+              <v-toolbar color="transparent">
+                <span class="headline">Slack token</span>
+              </v-toolbar>
+              <v-card-text>
+                <p>Your Slack token</p>
+                <v-text-field
+                  label="Token"
+                  :value="status.slackToken"
+                  @change="changeSlackToken"
+                />
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn @click="modals.slackTokenOpen = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </over-overlay>
+        </transition>
+
+        <transition>
+          <over-overlay v-if="modals.slackIcon">
+            <v-card>
+              <v-toolbar flat color="transparent">
+                <span class="headline">Slack Busy icon</span>
+              </v-toolbar>
+              <v-card-text>
+                <p>Icon in Slack for when you are busy but not in DnD</p>
+                <v-text-field
+                  label="Busy icon"
+                  :value="status.slackBusyIcon"
+                  @change="(event) => changeStatusValue('slackBusyIcon', event)"
+                  @keypress.enter="modals.slackIcon = false"
+                />
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn @click="modals.slackIcon = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </over-overlay>
+        </transition>
       </v-dialog>
-
-      <transition>
-        <over-overlay v-if="modals.defaultDurationOpen">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Default duration</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Default duration in minutes</p>
-              <v-layout row wrap justify-space-between>
-                <v-flex xs9>
-                  <v-slider
-                    style="-webkit-app-region: no-drag"
-                    :value="status.duration"
-                    :min="1"
-                    :max="180"
-                    @input="(event) => (status.duration = event)"
-                    @change="changeDuration"
-                  />
-                </v-flex>
-
-                <v-flex xs2>
-                  <v-text-field
-                    hide-details
-                    :value="status.duration"
-                    class="mt-0 pt-0"
-                    type="number"
-                    @change="changeDuration"
-                  />
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.defaultDurationOpen = false"
-                >Close</v-btn
-              >
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
-        <over-overlay v-if="modals.defaultMsgOpen">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Status message</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>The default message set when dnd is active</p>
-              <v-text-field
-                label="Default status message"
-                persistent-hint
-                :value="status.userMsg"
-                @change="changeMsg"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.defaultMsgOpen = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
-        <over-overlay v-if="modals.slackTokenOpen">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Slack token</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Your Slack token</p>
-              <v-text-field
-                label="Token"
-                :value="status.slackToken"
-                @change="changeSlackToken"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.slackTokenOpen = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
-
-      <transition>
-        <over-overlay v-if="modals.slackIcon">
-          <v-card>
-            <v-toolbar flat color="transparent">
-              <span class="headline">Slack Busy icon</span>
-            </v-toolbar>
-            <v-card-text>
-              <p>Icon in Slack for when you are busy but not in DnD</p>
-              <v-text-field
-                label="Busy icon"
-                :value="status.slackBusyIcon"
-                @change="(event) => changeStatusValue('slackBusyIcon', event)"
-              />
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer />
-              <v-btn flat @click="modals.slackIcon = false">Close</v-btn>
-            </v-card-actions>
-          </v-card>
-        </over-overlay>
-      </transition>
     </v-app>
   </div>
 </template>
@@ -447,6 +451,9 @@ export default {
       } else {
         this.openPreferences = false
       }
+    },
+    onClickOutside(event) {
+      console.log(event)
     },
   },
 }
