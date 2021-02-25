@@ -129,12 +129,9 @@ function getAccessToken(oAuth2Client, callback) {
     handleCallback(url)
   })
 
-  authWindow.webContents.on(
-    'did-get-redirect-request',
-    (event, oldUrl, newUrl) => {
-      handleCallback(newUrl)
-    },
-  )
+  authWindow.webContents.on('will-redirect', (event, url) => {
+    handleCallback(url)
+  })
 
   authWindow.on(
     'close',
