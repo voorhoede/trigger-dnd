@@ -115,10 +115,7 @@
             <v-divider></v-divider>
 
             <v-subheader>Slack</v-subheader>
-            <v-list-item
-              @click="toggleSlackEnabled"
-              :disabled="!status.slackToken"
-            >
+            <v-list-item @click="toggleSlackEnabled">
               <v-list-item-content>
                 <v-list-item-title>Enabled</v-list-item-title>
                 <v-list-item-subtitle
@@ -128,14 +125,6 @@
               <v-list-item-action style="min-width: 0">
                 <v-switch :input-value="status.slackEnabled"></v-switch>
               </v-list-item-action>
-            </v-list-item>
-            <v-list-item @click="modals.slackTokenOpen = true">
-              <v-list-item-content>
-                <v-list-item-title>Token</v-list-item-title>
-                <v-list-item-subtitle>{{
-                  status.slackToken ? status.slackToken : 'None'
-                }}</v-list-item-subtitle>
-              </v-list-item-content>
             </v-list-item>
             <v-list-item @click="modals.slackIcon = true">
               <v-list-item-content>

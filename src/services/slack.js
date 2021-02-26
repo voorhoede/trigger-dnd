@@ -1,7 +1,84 @@
-import { app } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
+import path from 'path'
 import slack from 'slack'
 import moment from 'moment'
+import dotenv from 'dotenv'
 import status from '../main/status'
+import { SLACK_ENABLED_TOGGLE } from '../events'
+
+dotenv.config({ path: path.join(__dirname, '../../.env') })
+
+const {
+  SLACK_CLIENT_ID: client_id,
+  SLACK_CLIENT_SECRET: client_secret,
+} = process.env
+const redirect_url = 'http://localhost'
+
+async function checkTokenValidity() {
+  try {
+    await slack.auth.test({ token: status.slackToken })
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
+ipcMain.on('preferences', async function (event, eventName) {
+  if (
+    eventName === SLACK_ENABLED_TOGGLE &&
+    !status.slackEnabled &&
+    (!status.slackToken || !(await checkTokenValidity()))
+  ) {
+    const authUrlParams = new URLSearchParams({
+      client_id,
+      scope: 'dnd:write,users.profile:write',
+      redirect_url,
+    })
+    const authUrl = `https://slack.com/oauth/authorize?${authUrlParams}`
+
+    const authWindow = new BrowserWindow({
+      width: 800,
+      height: 800,
+      show: false,
+      'node-integration': false,
+    })
+
+    authWindow.loadURL(authUrl)
+    authWindow.show()
+
+    async function handleCallback(url) {
+      const params = new URL(url).searchParams
+      const code = params.get('code')
+      const error = params.get('error')
+
+      if (code || error) {
+        authWindow.destroy()
+      }
+
+      if (code) {
+        const slackAcessResponse = await slack.oauth.access({
+          client_id,
+          client_secret,
+          code,
+        })
+
+        status.slackToken = slackAcessResponse.access_token
+      }
+
+      if (error) {
+        status.slackEnabled = false
+      }
+    }
+
+    authWindow.webContents.on('will-navigate', (event, url) => {
+      handleCallback(url)
+    })
+
+    authWindow.webContents.on('will-redirect', (event, url) => {
+      handleCallback(url)
+    })
+  }
+})
 
 export default function triggerSlack() {
   status.on('statusStarts', function ({ emoji }) {
