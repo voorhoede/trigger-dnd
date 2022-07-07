@@ -72,7 +72,7 @@
     "electron-squirrel-startup": "1.0.0",
     "emoji-tree": "1.1.2",
     "googleapis": "67.1.0",
-    "moment": "2.29.1",
+    "moment": "2.29.4",
     "node-luxafor": "2.1.0",
     "slack": "11.0.2",
     "update-electron-app": "2.0.1",
